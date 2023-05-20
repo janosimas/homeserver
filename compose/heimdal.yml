@@ -1,0 +1,14 @@
+
+  heimdall:
+    image: linuxserver/heimdall
+    container_name: heimdall
+    restart: unless-stopped
+    environment:
+      - TZ=${TZ} # Specify a timezone to use e.g. Europe/London.
+      - PUID=${PUID} # UID of user to take ownership of application/files
+      - PGID=${PGID} # GID of user to take ownership of application/files
+    volumes:
+      - ${DATADIR}/heimdall:/config
+    ports:
+      - 9080:80
+      - 9443:443
