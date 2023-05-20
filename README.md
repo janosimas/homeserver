@@ -7,3 +7,4 @@ This repository is a collection of scripts and configuration files to help setti
 ## TODO
 - Ansible is currently a stub
     - Set docker data-dir
+    - good place to start? https://robertdebock.nl/ansible.html
