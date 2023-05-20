@@ -1,0 +1,15 @@
+version: "2"
+
+services:
+  homeassistant:
+    image: linuxserver/homeassistant
+    container_name: homeassistant
+    restart: unless-stopped
+    environment:
+      - TZ=${TZ} # Specify a timezone to use e.g. Europe/London.
+      - PUID=${PUID} # UID of user to take ownership of application/files
+      - PGID=${PGID} # GID of user to take ownership of application/files
+    volumes:
+      - ${DATADIR}/homeassistant/config:/config # Contains all relevant configuration files.
+    ports:
+      - 8123:8123
