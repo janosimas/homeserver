@@ -9,7 +9,7 @@ services:
       - TZ=${TZ} # Specify a timezone to use e.g. Europe/London.
       - PUID=${PUID} # UID of user to take ownership of application/files
       - PGID=${PGID} # GID of user to take ownership of application/files
-      # - DOCKER_MODS=linuxserver/mods:universal-calibre #optional
+      - DOCKER_MODS=linuxserver/mods:universal-calibre
     volumes:
       - ${DATADIR}/calibre/config:/config # Where calibre-web stores the internal database and config.
       - ${DATADIR}/calibre/books:/books # Where your calibre database is located
