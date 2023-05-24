@@ -30,8 +30,8 @@ services:
       - PUID=${PUID}
       - PGID=${PGID}
       - TZ=${TZ}
-      - SERVERPORT=51820
-      - SERVERURL={SERVERURL}
+      - SERVERPORT=${SERVERPORT}
+      - SERVERURL=${SERVERURL}
       - PEERS=1 # How many peers to generate for you (clients)
       - PEERDNS=10.2.0.100 # Set it to point to pihole
       - INTERNAL_SUBNET=10.6.0.0
@@ -39,7 +39,7 @@ services:
       - ${DATADIR}/wireguard:/config
       - /lib/modules:/lib/modules
     ports:
-      - "51820:51820/udp"
+      - "${SERVERPORT}:51820/udp"
     dns:
       - 10.2.0.100 # Points to pihole
       - 10.2.0.200 # Points to unbound
