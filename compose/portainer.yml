@@ -3,7 +3,6 @@ version: "2"
 services:
   portainer:
     image: portainer/portainer-ce
-    container_name: portainer
     restart: unless-stopped
     # command: --admin-password ${PORTAINER_ADMIN_PW}
     ports:
@@ -11,3 +10,9 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ${DATADIR}/portainer/data:/data
+
+  reset_password:
+    image: portainer/helper-reset-password
+    volumes:
+      - ${DATADIR}/portainer/data:/data
+    profiles: ["dev"]
