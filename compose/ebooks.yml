@@ -1,4 +1,4 @@
-version: "2"
+version: "3.7"
 
 services:
   calibre_web:
@@ -14,6 +14,19 @@ services:
       - ${DATADIR}/shared/books:/books # Where your calibre database is located
     ports:
       - 8083:8083
+
+  audiobookshelf:
+    image: ghcr.io/advplyr/audiobookshelf:latest
+    environment:
+      - TZ=${TZ} # Specify a timezone to use e.g. Europe/London.
+      - PUID=${PUID} # UID of user to take ownership of application/files
+      - PGID=${PGID} # GID of user to take ownership of application/files
+    ports:
+      - 13378:80
+    volumes:
+      - ${DATADIR}/audiobookshelf/metadata:/metadata
+      - ${DATADIR}/audiobookshelf/config:/config
+      - ${DATADIR}/shared/audiobooks:/audiobooks
 
   lazylibrarian:
     image: linuxserver/lazylibrarian:latest
