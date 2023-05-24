@@ -3,7 +3,6 @@ version: "2"
 services:
   calibre_web:
     image: linuxserver/calibre-web
-    container_name: calibre_web
     restart: unless-stopped
     environment:
       - TZ=${TZ} # Specify a timezone to use e.g. Europe/London.
@@ -12,6 +11,24 @@ services:
       - DOCKER_MODS=linuxserver/mods:universal-calibre
     volumes:
       - ${DATADIR}/calibre/config:/config # Where calibre-web stores the internal database and config.
-      - ${DATADIR}/calibre/books:/books # Where your calibre database is located
+      - ${DATADIR}/shared/books:/books # Where your calibre database is located
     ports:
       - 8083:8083
+
+  lazylibrarian:
+    image: linuxserver/lazylibrarian:latest
+    restart: unless-stopped
+    environment:
+      - TZ=${TZ} # Specify a timezone to use e.g. Europe/London.
+      - PUID=${PUID} # UID of user to take ownership of application/files
+      - PGID=${PGID} # GID of user to take ownership of application/files
+      - DOCKER_MODS=linuxserver/mods:universal-calibre|linuxserver/mods:lazylibrarian-ffmpeg
+    volumes:
+      - ${DATADIR}/lazylibrarian/config:/config
+      - ${DATADIR}/shared/books:/books
+      - ${DATADIR}/shared/downloads:/downloads
+      - ${DATADIR}/shared/audiobooks:/audiobooks
+      - ${DATADIR}/shared/magazines:/magazines
+      - ${DATADIR}/shared/comics:/comics
+    ports:
+      - 5299:5299
