@@ -4,7 +4,13 @@ This repository is a collection of scripts and configuration files to help setti
 
 **IMPORTANT**: These are experiments and should not be considered production ready or safe
 
-## TODO
-- Ansible is currently a stub
-    - Set docker data-dir
-    - good place to start? https://robertdebock.nl/ansible.html
+## Containers
+
+The setup for the containers can be found in the `compose`.
+
+The containers can be started in the background using:
+```bash
+docker compose -f <config.yml> up -d
+```
+
+An exception is `wirehole`, that need that `config/unbound.conf` is copied to `${DATADIR}/unbound`
