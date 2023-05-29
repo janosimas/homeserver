@@ -1,0 +1,21 @@
+# General
+TZ: "Europe/Amsterdam"
+PUID: 1000
+PGID: 1000
+
+# Data
+DATADIR:
+SERVICE_DATADIR: "{{ DATADIR }}/service"
+DOCKER_DATA: "{{ SERVICE_DATADIR }}/docker/data"
+
+# Server
+INTERNAL_ADDR:
+EXTERNAL_ADDR:
+EXTERNAL_PORT:
+
+# Portainer
+PORTAINER_ENV:
+PORTAINER_API_KEY:
+
+# Audiobookshelf
+AUDIOBOOKSHELF_API_KEY:

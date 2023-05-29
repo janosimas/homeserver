@@ -9,7 +9,7 @@ services:
       - PUID=${PUID} # UID of user to take ownership of application/files
       - PGID=${PGID} # GID of user to take ownership of application/files
     volumes:
-      - ${DATADIR}/heimdall:/config
+      - ${SERVICE_DATADIR}/heimdall:/config
     ports:
       - 9080:80
       - 9443:443

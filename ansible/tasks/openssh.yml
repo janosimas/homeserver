@@ -1,0 +1,4 @@
+- name: Install ssh server
+  ansible.builtin.package:
+    name: "openssh-server"
+    state: present

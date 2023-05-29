@@ -10,10 +10,16 @@ services:
       - PGID=${PGID} # GID of user to take ownership of application/files
       - DOCKER_MODS=linuxserver/mods:universal-calibre
     volumes:
-      - ${DATADIR}/calibre/config:/config # Where calibre-web stores the internal database and config.
+      - ${SERVICE_DATADIR}/calibre/config:/config # Where calibre-web stores the internal database and config.
       - ${DATADIR}/shared/books:/books # Where your calibre database is located
     ports:
       - 8083:8083
+    labels:
+      - homepage.group=Media
+      - homepage.name=Calibre-Web
+      - homepage.icon=calibre-web.png
+      - homepage.href=${INTERNAL_ADDR}:8083/
+      - homepage.description=Ebook server
 
   audiobookshelf:
     image: ghcr.io/advplyr/audiobookshelf:latest
@@ -24,9 +30,18 @@ services:
     ports:
       - 13378:80
     volumes:
-      - ${DATADIR}/audiobookshelf/metadata:/metadata
-      - ${DATADIR}/audiobookshelf/config:/config
+      - ${SERVICE_DATADIR}/audiobookshelf/metadata:/metadata
+      - ${SERVICE_DATADIR}/audiobookshelf/config:/config
       - ${DATADIR}/shared/audiobooks:/audiobooks
+    LABELS:
+      - homepage.group=Media
+      - homepage.name=AudioBookShelf
+      - homepage.icon=audiobookshelf.png
+      - homepage.href=${INTERNAL_ADDR}:13378/
+      - homepage.description=Audiobook server
+      - homepage.widget.type=audiobookshelf
+      - homepage.widget.url=${INTERNAL_ADDR}:13378/
+      - homepage.widget.key=${AUDIOBOOKSHELF_API_KEY}
 
   lazylibrarian:
     image: linuxserver/lazylibrarian:latest
@@ -37,7 +52,7 @@ services:
       - PGID=${PGID} # GID of user to take ownership of application/files
       - DOCKER_MODS=linuxserver/mods:universal-calibre|linuxserver/mods:lazylibrarian-ffmpeg
     volumes:
-      - ${DATADIR}/lazylibrarian/config:/config
+      - ${SERVICE_DATADIR}/lazylibrarian/config:/config
       - ${DATADIR}/shared/books:/books
       - ${DATADIR}/shared/downloads:/downloads
       - ${DATADIR}/shared/audiobooks:/audiobooks
@@ -45,3 +60,9 @@ services:
       - ${DATADIR}/shared/comics:/comics
     ports:
       - 5299:5299
+    labels:
+      - homepage.group=Media
+      - homepage.name=LazyLibrarian
+      - homepage.icon=lazylibrarian.png
+      - homepage.href=${INTERNAL_ADDR}:5299/
+      - homepage.description=Ebook releases manager

@@ -9,10 +9,20 @@ services:
       - 9000:9000
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - ${DATADIR}/portainer/data:/data
+      - ${SERVICE_DATADIR}/portainer/data:/data
+    labels:
+      - homepage.group=System
+      - homepage.name=Portainer
+      - homepage.icon=portainer.png
+      - homepage.href=${INTERNAL_ADDR}:9000/
+      - homepage.description=Containers manager
+      - homepage.widget.type=portainer
+      - homepage.widget.url=${INTERNAL_ADDR}:9000/
+      - homepage.widget.key=${PORTAINER_API_KEY}
+      - homepage.widget.enc=${PORTAINER_ENV}
 
   reset_password:
     image: portainer/helper-reset-password
     volumes:
-      - ${DATADIR}/portainer/data:/data
+      - ${SERVICE_DATADIR}/portainer/data:/data
     profiles: ["dev"]

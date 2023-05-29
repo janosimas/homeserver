@@ -1,0 +1,7 @@
+- name: Set unbound configuration
+  ansible.builtin.copy:
+    src: ansible/config/unbound.conf
+    dest: "{{ SERVICE_DATADIR }}/unbound/unbound.conf"
+    owner: root
+    group: root
+    mode: "0644"

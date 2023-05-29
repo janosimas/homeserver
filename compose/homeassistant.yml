@@ -9,6 +9,12 @@ services:
       - PUID=${PUID} # UID of user to take ownership of application/files
       - PGID=${PGID} # GID of user to take ownership of application/files
     volumes:
-      - ${DATADIR}/homeassistant/config:/config # Contains all relevant configuration files.
+      - ${SERVICE_DATADIR}/homeassistant/config:/config # Contains all relevant configuration files.
     ports:
       - 8123:8123
+    labels:
+      - homepage.group=Smart Home
+      - homepage.name=HomeAssistant
+      - homepage.icon=homeassistant.png
+      - homepage.href=${INTERNAL_ADDR}:8123/
+      - homepage.description=Smart home automation manager

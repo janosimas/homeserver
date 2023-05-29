@@ -4,13 +4,12 @@ This repository is a collection of scripts and configuration files to help setti
 
 **IMPORTANT**: These are experiments and should not be considered production ready or safe
 
+# Ansible
+
+When using ansible, set the variables in `ansible/vars/main_vars.yml`1
+
 ## Containers
 
-The setup for the containers can be found in the `compose`.
+The services can be started using the `start_service.sh` script.
 
-The containers can be started in the background using:
-```bash
-docker compose -f <config.yml> up -d
-```
-
-An exception is `wirehole`, that need that `config/unbound.conf` is copied to `${DATADIR}/unbound`
+This script assumes that the `ansible/setup_playbook.yml` was executed.
