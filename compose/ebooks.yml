@@ -18,7 +18,7 @@ services:
       - homepage.group=Media
       - homepage.name=Calibre-Web
       - homepage.icon=calibre-web.png
-      - homepage.href=${INTERNAL_ADDR}:8083/
+      - homepage.href=http://${INTERNAL_ADDR}:8083/
       - homepage.description=Ebook server
 
   audiobookshelf:
@@ -37,10 +37,10 @@ services:
       - homepage.group=Media
       - homepage.name=AudioBookShelf
       - homepage.icon=audiobookshelf.png
-      - homepage.href=${INTERNAL_ADDR}:13378/
+      - homepage.href=http://${INTERNAL_ADDR}:13378/
       - homepage.description=Audiobook server
       - homepage.widget.type=audiobookshelf
-      - homepage.widget.url=${INTERNAL_ADDR}:13378/
+      - homepage.widget.url=http://${INTERNAL_ADDR}:13378/
       - homepage.widget.key=${AUDIOBOOKSHELF_API_KEY}
 
   lazylibrarian:
@@ -64,5 +64,5 @@ services:
       - homepage.group=Media
       - homepage.name=LazyLibrarian
       - homepage.icon=lazylibrarian.png
-      - homepage.href=${INTERNAL_ADDR}:5299/
+      - homepage.href=http://${INTERNAL_ADDR}:5299/
       - homepage.description=Ebook releases manager

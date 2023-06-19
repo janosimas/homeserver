@@ -16,5 +16,5 @@ services:
       - homepage.group=Smart Home
       - homepage.name=HomeAssistant
       - homepage.icon=homeassistant.png
-      - homepage.href=${INTERNAL_ADDR}:8123/
+      - homepage.href=http://${INTERNAL_ADDR}:8123/
       - homepage.description=Smart home automation manager
