@@ -33,7 +33,7 @@ services:
       - ${SERVICE_DATADIR}/audiobookshelf/metadata:/metadata
       - ${SERVICE_DATADIR}/audiobookshelf/config:/config
       - ${DATADIR}/shared/audiobooks:/audiobooks
-    LABELS:
+    labels:
       - homepage.group=Media
       - homepage.name=AudioBookShelf
       - homepage.icon=audiobookshelf.png
