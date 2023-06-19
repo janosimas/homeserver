@@ -1,4 +1,16 @@
-# Install docker
+- name: Set docker damon config
+  ansible.builtin.copy:
+    src: templates/docker.daemon.json.in
+    dest: /etc/docker/daemon.json
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Create folder for docker data
+  file:
+    path: "{{ DOCKER_DATA }}"
+    state: directory
+
 - name: Configure debian like systems
   when:
     - ansible_pkg_mgr == "apt"
@@ -22,34 +34,6 @@
     loop:
       - "docker-ce"
       - "docker-compose-plugin"
-
-# Setup docker data dir
-- name: Stop service docker, if started
-  ansible.builtin.service:
-    name: "{{ item }}"
-    state: stopped
-    loop:
-      - docker
-      - docker.socket
-      - containerd
-
-- name: Copy file with owner and permissions
-  ansible.builtin.copy:
-    src: templates/docker.daemon.json.in
-    dest: /etc/docker/daemon.json
-    owner: root
-    group: root
-    mode: "0644"
-
-- name: Create folder for docker data
-  file:
-    path: "{{ DOCKER_DATA }}"
-    state: directory
-
-- name: Start service docker
-  ansible.builtin.service:
-    name: docker
-    state: started
 
 - name: Check docker data dir
   shell: test "$(docker info -f '{{ .DockerRootDir}}')" = "{{ DOCKER_DATA }}"
