@@ -6,7 +6,7 @@ This repository is a collection of scripts and configuration files to help setti
 
 # Ansible
 
-When using ansible, set the variables in `ansible/vars/main_vars.yml`1
+When using ansible, set the variables in `ansible/vars/main_vars.yml`
 
 ## Containers
 
