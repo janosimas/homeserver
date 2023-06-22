@@ -5,8 +5,9 @@ PGID: 1000
 
 # Data
 DATADIR:
-SERVICE_DATADIR: "{{ DATADIR }}/service"
-DOCKER_DATA: "{{ SERVICE_DATADIR }}/docker/data"
+SHARED_DATA: "{{ DATADIR }}/shared"
+SERVICE_DATA: "{{ DATADIR }}/service"
+DOCKER_DATA: "{{ SERVICE_DATA }}/docker/data"
 
 # Server
 INTERNAL_ADDR:

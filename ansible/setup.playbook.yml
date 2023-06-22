@@ -13,7 +13,7 @@
   tasks:
     - name: Create folder for services data
       file:
-        path: "{{ SERVICE_DATADIR }}"
+        path: "{{ SERVICE_DATA }}"
         state: directory
 
     - name: Include tasks

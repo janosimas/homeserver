@@ -9,7 +9,7 @@ services:
       - PUID=${PUID} # UID of user to take ownership of application/files
       - PGID=${PGID} # GID of user to take ownership of application/files
     volumes:
-      - ${SERVICE_DATADIR}/homeassistant/config:/config # Contains all relevant configuration files.
+      - ${SERVICE_DATA}/homeassistant/config:/config # Contains all relevant configuration files.
     ports:
       - 8123:8123
     labels:
@@ -28,4 +28,4 @@ services:
       - PUID=${PUID} # UID of user to take ownership of application/files
       - PGID=${PGID} # GID of user to take ownership of application/files
     volumes:
-      - ${SERVICE_DATADIR}/mosquitto:/mosquitto
+      - ${SERVICE_DATA}/mosquitto:/mosquitto

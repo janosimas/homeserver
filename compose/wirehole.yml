@@ -15,7 +15,7 @@ services:
     restart: unless-stopped
     hostname: "unbound"
     volumes:
-      - "${SERVICE_DATADIR}/unbound:/opt/unbound/etc/unbound/"
+      - "${SERVICE_DATA}/unbound:/opt/unbound/etc/unbound/"
     networks:
       private_network:
         ipv4_address: 10.2.0.200
@@ -36,7 +36,7 @@ services:
       - PEERDNS=10.2.0.100 # Set it to point to pihole
       - INTERNAL_SUBNET=10.6.0.0
     volumes:
-      - ${SERVICE_DATADIR}/wireguard:/config
+      - ${SERVICE_DATA}/wireguard:/config
       - /lib/modules:/lib/modules
     ports:
       - "${EXTERNAL_PORT}:51820/udp"
@@ -66,8 +66,8 @@ services:
       DNS2: 10.2.0.200 # If we don't specify two, it will auto pick google.
     # Volumes store your data between container upgrades
     volumes:
-      - "${SERVICE_DATADIR}/pihole/:/etc/pihole/"
-      - "${SERVICE_DATADIR}/dnsmasq.d/:/etc/dnsmasq.d/"
+      - "${SERVICE_DATA}/pihole/:/etc/pihole/"
+      - "${SERVICE_DATA}/dnsmasq.d/:/etc/dnsmasq.d/"
     # Recommended but not required (DHCP needs NET_ADMIN)
     #   https://github.com/pi-hole/docker-pi-hole#note-on-capabilities
     cap_add:

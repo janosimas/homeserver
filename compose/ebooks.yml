@@ -10,8 +10,8 @@ services:
       - PGID=${PGID} # GID of user to take ownership of application/files
       - DOCKER_MODS=linuxserver/mods:universal-calibre
     volumes:
-      - ${SERVICE_DATADIR}/calibre/config:/config # Where calibre-web stores the internal database and config.
-      - ${DATADIR}/shared/books:/books # Where your calibre database is located
+      - ${SERVICE_DATA}/calibre/config:/config # Where calibre-web stores the internal database and config.
+      - ${SHARED_DATA}/books:/books # Where your calibre database is located
     ports:
       - 8083:8083
     labels:
@@ -30,9 +30,9 @@ services:
     ports:
       - 13378:80
     volumes:
-      - ${SERVICE_DATADIR}/audiobookshelf/metadata:/metadata
-      - ${SERVICE_DATADIR}/audiobookshelf/config:/config
-      - ${DATADIR}/shared/audiobooks:/audiobooks
+      - ${SERVICE_DATA}/audiobookshelf/metadata:/metadata
+      - ${SERVICE_DATA}/audiobookshelf/config:/config
+      - ${SHARED_DATA}/audiobooks:/audiobooks
     labels:
       - homepage.group=Media
       - homepage.name=AudioBookShelf
@@ -52,12 +52,12 @@ services:
       - PGID=${PGID} # GID of user to take ownership of application/files
       - DOCKER_MODS=linuxserver/mods:universal-calibre|linuxserver/mods:lazylibrarian-ffmpeg
     volumes:
-      - ${SERVICE_DATADIR}/lazylibrarian/config:/config
-      - ${DATADIR}/shared/books:/books
-      - ${DATADIR}/shared/downloads:/downloads
-      - ${DATADIR}/shared/audiobooks:/audiobooks
-      - ${DATADIR}/shared/magazines:/magazines
-      - ${DATADIR}/shared/comics:/comics
+      - ${SERVICE_DATA}/lazylibrarian/config:/config
+      - ${SHARED_DATA}/books:/books
+      - ${SHARED_DATA}/downloads:/downloads
+      - ${SHARED_DATA}/audiobooks:/audiobooks
+      - ${SHARED_DATA}/magazines:/magazines
+      - ${SHARED_DATA}/comics:/comics
     ports:
       - 5299:5299
     labels:
