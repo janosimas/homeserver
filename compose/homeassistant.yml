@@ -18,3 +18,14 @@ services:
       - homepage.icon=home-assistant.png
       - homepage.href=http://${INTERNAL_ADDR}:8123/
       - homepage.description=Smart home automation manager
+  mosquitto:
+    image: eclipse-mosquitto
+    restart: unless-stopped
+    ports:
+      - "1883:1883/tcp"
+    environment:
+      - TZ=${TZ} # Specify a timezone to use e.g. Europe/London.
+      - PUID=${PUID} # UID of user to take ownership of application/files
+      - PGID=${PGID} # GID of user to take ownership of application/files
+    volumes:
+      - ${SERVICE_DATADIR}/mosquitto:/mosquitto
