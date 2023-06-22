@@ -11,11 +11,6 @@
     - vars/main_vars.yml
 
   tasks:
-    - name: Create .env file
-      ansible.builtin.copy:
-        src: templates/.env.in
-        dest: ../.env
-
     - name: Create folder for services data
       file:
         path: "{{ SERVICE_DATADIR }}"
