@@ -2,6 +2,7 @@ version: "3.3"
 services:
   homepage:
     image: ghcr.io/benphelps/homepage:latest
+    restart: always
     ports:
       - 3000:3000
     volumes:

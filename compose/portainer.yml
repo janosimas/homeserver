@@ -3,7 +3,7 @@ version: "2"
 services:
   portainer:
     image: portainer/portainer-ce
-    restart: unless-stopped
+    restart: always
     # command: --admin-password ${PORTAINER_ADMIN_PW}
     ports:
       - 9000:9000

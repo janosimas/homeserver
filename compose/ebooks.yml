@@ -23,6 +23,7 @@ services:
 
   audiobookshelf:
     image: ghcr.io/advplyr/audiobookshelf:latest
+    restart: unless-stopped
     environment:
       - TZ=${TZ} # Specify a timezone to use e.g. Europe/London.
       - PUID=${PUID} # UID of user to take ownership of application/files
@@ -42,27 +43,3 @@ services:
       - homepage.widget.type=audiobookshelf
       - homepage.widget.url=http://${INTERNAL_ADDR}:13378/
       - homepage.widget.key=${AUDIOBOOKSHELF_API_KEY}
-
-  lazylibrarian:
-    image: linuxserver/lazylibrarian:latest
-    restart: unless-stopped
-    environment:
-      - TZ=${TZ} # Specify a timezone to use e.g. Europe/London.
-      - PUID=${PUID} # UID of user to take ownership of application/files
-      - PGID=${PGID} # GID of user to take ownership of application/files
-      - DOCKER_MODS=linuxserver/mods:universal-calibre|linuxserver/mods:lazylibrarian-ffmpeg
-    volumes:
-      - ${SERVICE_DATA}/lazylibrarian/config:/config
-      - ${SHARED_DATA}/books:/books
-      - ${SHARED_DATA}/downloads:/downloads
-      - ${SHARED_DATA}/audiobooks:/audiobooks
-      - ${SHARED_DATA}/magazines:/magazines
-      - ${SHARED_DATA}/comics:/comics
-    ports:
-      - 5299:5299
-    labels:
-      - homepage.group=Media
-      - homepage.name=LazyLibrarian
-      - homepage.icon=lazylibrarian.png
-      - homepage.href=http://${INTERNAL_ADDR}:5299/
-      - homepage.description=Ebook releases manager
