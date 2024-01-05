@@ -1,0 +1,39 @@
+- name: Set docker damon config
+  ansible.builtin.copy:
+    src: templates/docker.daemon.json.in
+    dest: /etc/docker/daemon.json
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Create folder for docker data
+  file:
+    path: "{{ DOCKER_DATA }}"
+    state: directory
+
+- name: Configure debian like systems
+  when:
+    - ansible_pkg_mgr == "apt"
+  block:
+    - name: Install apt key
+      ansible.builtin.apt_key:
+        url: "https://download.docker.com/linux/{{ ansible_distribution | lower }}/gpg"
+        state: present
+
+    - name: Install docker_ce repository for apt
+      ansible.builtin.apt_repository:
+        repo: "deb [arch={{ docker_ce_apt_repository_arch }}] https://download.docker.com/linux/{{ ansible_distribution | lower }} {{ ansible_distribution_release }} stable"
+        state: present
+      notify:
+        - Apt update cache
+
+- name: Install docker components
+  ansible.builtin.package:
+    name: "{{ item }}"
+    state: present
+    loop:
+      - "docker-ce"
+      - "docker-compose-plugin"
+
+- name: Check docker data dir
+  shell: test "$(docker info -f '{{ .DockerRootDir}}')" = "{{ DOCKER_DATA }}"

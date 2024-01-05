@@ -3,16 +3,26 @@ version: "2"
 services:
   portainer:
     image: portainer/portainer-ce
-    restart: unless-stopped
+    restart: always
     # command: --admin-password ${PORTAINER_ADMIN_PW}
     ports:
       - 9000:9000
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - ${DATADIR}/portainer/data:/data
+      - ${SERVICE_DATA}/portainer/data:/data
+    labels:
+      - homepage.group=System
+      - homepage.name=Portainer
+      - homepage.icon=portainer.png
+      - homepage.href=http://${INTERNAL_ADDR}:9000/
+      - homepage.description=Containers manager
+      - homepage.widget.type=portainer
+      - homepage.widget.url=http://${INTERNAL_ADDR}:9000/
+      - homepage.widget.key=${PORTAINER_API_KEY}
+      - homepage.widget.env=${PORTAINER_ENV}
 
   reset_password:
     image: portainer/helper-reset-password
     volumes:
-      - ${DATADIR}/portainer/data:/data
+      - ${SERVICE_DATA}/portainer/data:/data
     profiles: ["dev"]

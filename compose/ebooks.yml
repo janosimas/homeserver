@@ -10,13 +10,19 @@ services:
       - PGID=${PGID} # GID of user to take ownership of application/files
       - DOCKER_MODS=linuxserver/mods:universal-calibre
     volumes:
-      - ${DATADIR}/calibre/config:/config # Where calibre-web stores the internal database and config.
-      - ${DATADIR}/shared/books:/books # Where your calibre database is located
+      - ${SERVICE_DATA}/calibre/config:/config # Where calibre-web stores the internal database and config.
+      - ${SHARED_DATA}/books:/books # Where your calibre database is located
     ports:
       - 8083:8083
-
+    labels:
+      - homepage.group=Media
+      - homepage.name=Calibre-Web
+      - homepage.icon=calibre-web.png
+      - homepage.href=http://${INTERNAL_ADDR}:8083/
+      - homepage.description=Ebook server
   audiobookshelf:
     image: ghcr.io/advplyr/audiobookshelf:latest
+    restart: unless-stopped
     environment:
       - TZ=${TZ} # Specify a timezone to use e.g. Europe/London.
       - PUID=${PUID} # UID of user to take ownership of application/files
@@ -24,24 +30,42 @@ services:
     ports:
       - 13378:80
     volumes:
-      - ${DATADIR}/audiobookshelf/metadata:/metadata
-      - ${DATADIR}/audiobookshelf/config:/config
-      - ${DATADIR}/shared/audiobooks:/audiobooks
-
-  lazylibrarian:
-    image: linuxserver/lazylibrarian:latest
+      - ${SERVICE_DATA}/audiobookshelf/metadata:/metadata
+      - ${SERVICE_DATA}/audiobookshelf/config:/config
+      - ${SHARED_DATA}/audiobooks:/audiobooks
+    labels:
+      - homepage.group=Media
+      - homepage.name=AudioBookShelf
+      - homepage.icon=audiobookshelf.png
+      - homepage.href=http://${INTERNAL_ADDR}:13378/
+      - homepage.description=Audiobook server
+      - homepage.widget.type=audiobookshelf
+      - homepage.widget.url=http://${INTERNAL_ADDR}:13378/
+      - homepage.widget.key=${AUDIOBOOKSHELF_API_KEY}
+  calibre:
+    image: linuxserver/calibre
     restart: unless-stopped
+    security_opt:
+      - seccomp:unconfined #optional
     environment:
       - TZ=${TZ} # Specify a timezone to use e.g. Europe/London.
       - PUID=${PUID} # UID of user to take ownership of application/files
       - PGID=${PGID} # GID of user to take ownership of application/files
-      - DOCKER_MODS=linuxserver/mods:universal-calibre|linuxserver/mods:lazylibrarian-ffmpeg
+      - DOCKER_MODS=linuxserver/mods:universal-calibre
+      # - PASSWORD= #optional
+      # - CLI_ARGS= #optional
     volumes:
-      - ${DATADIR}/lazylibrarian/config:/config
-      - ${DATADIR}/shared/books:/books
-      - ${DATADIR}/shared/downloads:/downloads
-      - ${DATADIR}/shared/audiobooks:/audiobooks
-      - ${DATADIR}/shared/magazines:/magazines
-      - ${DATADIR}/shared/comics:/comics
+      - ${SERVICE_DATA}/calibre/config:/config # Where calibre stores the internal database and config.
+      - ${SHARED_DATA}/books:/books # Where your calibre database is located
+      - ${SHARED_DATA}:/shared
     ports:
-      - 5299:5299
+      - 8080:8080
+      - 8181:8181
+      - 8081:8081
+    labels:
+      - homepage.group=Media
+      - homepage.name=Calibre
+      - homepage.icon=calibre.png
+      - homepage.href=http://${INTERNAL_ADDR}:8080/
+      - homepage.description=Ebook server
+    profiles: ["dev"]

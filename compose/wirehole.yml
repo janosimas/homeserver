@@ -14,8 +14,12 @@ services:
     image: "mvance/unbound:latest"
     restart: unless-stopped
     hostname: "unbound"
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
     volumes:
-      - "${DATADIR}/unbound:/opt/unbound/etc/unbound/"
+      - "${SERVICE_DATA}/unbound:/opt/unbound/etc/unbound/"
     networks:
       private_network:
         ipv4_address: 10.2.0.200
@@ -30,16 +34,16 @@ services:
       - PUID=${PUID}
       - PGID=${PGID}
       - TZ=${TZ}
-      - SERVERPORT=${SERVERPORT}
-      - SERVERURL=${SERVERURL}
+      - SERVERPORT=${EXTERNAL_PORT}
+      - SERVERURL=${EXTERNAL_ADDR}
       - PEERS=1 # How many peers to generate for you (clients)
       - PEERDNS=10.2.0.100 # Set it to point to pihole
       - INTERNAL_SUBNET=10.6.0.0
     volumes:
-      - ${DATADIR}/wireguard:/config
+      - ${SERVICE_DATA}/wireguard:/config
       - /lib/modules:/lib/modules
     ports:
-      - "${SERVERPORT}:51820/udp"
+      - "${EXTERNAL_PORT}:51820/udp"
     dns:
       - 10.2.0.100 # Points to pihole
       - 10.2.0.200 # Points to unbound
@@ -59,6 +63,8 @@ services:
       - 127.0.0.1
       - 10.2.0.200 # Points to unbound
     environment:
+      PUID: ${PUID}
+      PGID: ${PGID}
       TZ: ${TZ}
       WEBPASSWORD: "" # Blank password - Can be whatever you want.
       ServerIP: 10.2.0.100 # Internal IP of pihole
@@ -66,8 +72,8 @@ services:
       DNS2: 10.2.0.200 # If we don't specify two, it will auto pick google.
     # Volumes store your data between container upgrades
     volumes:
-      - "${DATADIR}/pihole/:/etc/pihole/"
-      - "${DATADIR}/dnsmasq.d/:/etc/dnsmasq.d/"
+      - "${SERVICE_DATA}/pihole/:/etc/pihole/"
+      - "${SERVICE_DATA}/dnsmasq.d/:/etc/dnsmasq.d/"
     # Recommended but not required (DHCP needs NET_ADMIN)
     #   https://github.com/pi-hole/docker-pi-hole#note-on-capabilities
     cap_add:

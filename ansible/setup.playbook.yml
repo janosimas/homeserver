@@ -1,0 +1,24 @@
+---
+- name: "Setting up the home server"
+  hosts: localhost
+  connection: local
+
+  # become root user, which is needed for most tasks
+  become: yes
+  become_user: root
+
+  vars_files:
+    - vars/main_vars.yml
+
+  tasks:
+    - name: Create folder for services data
+      file:
+        path: "{{ SERVICE_DATA }}"
+        state: directory
+
+    - name: Include tasks
+      include_tasks: "{{ item }}"
+      loop:
+        - tasks/openssh.yml
+        - tasks/docker.yml
+        - tasks/unbound.yml
