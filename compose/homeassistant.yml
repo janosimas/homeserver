@@ -29,3 +29,23 @@ services:
       - PGID=${PGID} # GID of user to take ownership of application/files
     volumes:
       - ${SERVICE_DATA}/mosquitto:/mosquitto
+  node-red:
+    image: nodered/node-red
+    restart: unless-stopped
+    depends_on:
+      - homeassistant
+      - mosquitto
+    ports:
+      - "1880:1880/tcp"
+    environment:
+      - TZ=${TZ} # Specify a timezone to use e.g. Europe/London.
+      - PUID=${PUID} # UID of user to take ownership of application/files
+      - PGID=${PGID} # GID of user to take ownership of application/files
+    volumes:
+      - ${SERVICE_DATA}/node-red:/data
+    labels:
+      - homepage.group=Smart Home
+      - homepage.name=NodeRed
+      - homepage.icon=node-red.png
+      - homepage.href=http://${INTERNAL_ADDR}:1880/
+      - homepage.description=Smart home automation
