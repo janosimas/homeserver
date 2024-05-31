@@ -9,11 +9,11 @@ services:
       - TZ=${TZ} # Specify a timezone to use e.g. Europe/London.
       - PUID=${PUID} # UID of user to take ownership of application/files
       - PGID=${PGID} # GID of user to take ownership of application/files
-      - FB_BASEURL=/downloads
+      - FB_BASEURL=/filebrowser
     ports:
       - 9180:8080
     volumes:
-      - ${SHARED_DATA}/downloads:/downloads
+      - ${SHARED_DATA}/downloads:/data
       - ${SERVICE_DATA}/filebroser/config:/config
     labels:
       - homepage.group=Files
