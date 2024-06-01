@@ -24,9 +24,9 @@ services:
       - CORS_ALLOW_ORIGIN='^https?://(localhost|127\.0\.0\.1)(:[0-9]+)?$'
       - JWT_SECRET_KEY=%kernel.project_dir%/config/jwt/private.pem
       - JWT_PUBLIC_KEY=%kernel.project_dir%/config/jwt/public.pem
-      - DB_DRIVER=pdo_pgsql
       - DB_HOST=db
-      - DB_PORT=5432
+      - DB_DRIVER=pdo_mysql
+      - DB_PORT=3306
       - DB_USER=koillection
       - DB_VERSION=16
     volumes:
@@ -44,11 +44,6 @@ services:
       - PGID=${PGID} # GID of user to take ownership of application/files
       - MYSQL_DATABASE=koillection
       - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
-      - DB_DRIVER=pdo_pgsql
-      - DB_HOST=db
-      - DB_PORT=5432
-      - DB_USER=koillection
-      - DB_VERSION=16
     volumes:
       - "${SERVICE_DATA}/koillection/mysql:/var/lib/mysql"
 
