@@ -32,11 +32,15 @@ services:
       - DB_NAME=koillection
       - DB_USER=koillection
       - DB_PASSWORD=${DB_PASSWORD}
-
     volumes:
       - ${SERVICE_DATA}/koillection/conf:/conf
       - ${SERVICE_DATA}/koillection/uploads:/uploads
-
+    labels:
+      - homepage.group=Files
+      - homepage.name=Koillection
+      - homepage.icon=koillection.png
+      - homepage.href=http://${INTERNAL_ADDR}:9280/
+      - homepage.description=Collections manager
   db:
     image: mysql:latest
     container_name: db
