@@ -1,7 +1,6 @@
 version: "3"
 
 services:
-  # Koillection
   koillection:
     image: koillection/koillection
     container_name: koillection
@@ -17,22 +16,26 @@ services:
       - APP_DEBUG=0
       - APP_ENV=prod
       # - APP_SECRET=
-      - HTTPS_ENABLED=1
+      - HTTPS_ENABLED=0
       - UPLOAD_MAX_FILESIZE=20M
       - PHP_MEMORY_LIMIT=512M
       - PHP_TZ=${TZ}
       - CORS_ALLOW_ORIGIN='^https?://(localhost|127\.0\.0\.1)(:[0-9]+)?$'
       - JWT_SECRET_KEY=%kernel.project_dir%/config/jwt/private.pem
       - JWT_PUBLIC_KEY=%kernel.project_dir%/config/jwt/public.pem
-      - DB_HOST=db
+      # - DB_DRIVER=pdo_pgsql
+      # - DB_PORT=5432
       - DB_DRIVER=pdo_mysql
       - DB_PORT=3306
-      - DB_USER=koillection
+      - DB_HOST=db
       - DB_VERSION=16
-    volumes:
-      - ${SERVICE_DATA}/koillection/uploads:/uploads
+      - DB_NAME=koillection
+      - DB_USER=koillection
+      - DB_PASSWORD=${DB_PASSWORD}
 
-  # Database : choose one of the following
+    volumes:
+      - ${SERVICE_DATA}/koillection/conf:/conf
+      - ${SERVICE_DATA}/koillection/uploads:/uploads
 
   db:
     image: mysql:latest
@@ -43,19 +46,18 @@ services:
       - PUID=${PUID} # UID of user to take ownership of application/files
       - PGID=${PGID} # GID of user to take ownership of application/files
       - MYSQL_DATABASE=koillection
+      - MYSQL_USER=koillection
+      - MYSQL_PASSWORD=${DB_PASSWORD}
       - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
     volumes:
-      - "${SERVICE_DATA}/koillection/mysql:/var/lib/mysql"
+      - ${SERVICE_DATA}/koillection/mysql:/var/lib/mysql
 
-  # db:
-  #     image: postgres:16
-  #     container_name: db
-  #     restart: unless-stopped
-  #     env_file:
-  #         - .env
-  #     environment:
-  #         - POSTGRES_DB=${DB_NAME}
-  #         - POSTGRES_USER=${DB_USER}
-  #         - POSTGRES_PASSWORD=${DB_PASSWORD}
-  #     volumes:
-  #         - "./volumes/postgresql:/var/lib/postgresql/data"
+  #   image: postgres:16
+  #   container_name: db
+  #   restart: unless-stopped
+  #   environment:
+  #       - POSTGRES_DB=koillection
+  #       - POSTGRES_USER=koillection
+  #       - POSTGRES_PASSWORD=${DB_PASSWORD}
+  #   volumes:
+  #       - ${SERVICE_DATA}/postgresql:/var/lib/postgresql/data"
