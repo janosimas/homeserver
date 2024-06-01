@@ -16,11 +16,6 @@ services:
       - homepage.icon=portainer.png
       - homepage.href=http://${INTERNAL_ADDR}:9000/
       - homepage.description=Containers manager
-      - homepage.widget.type=portainer
-      - homepage.widget.url=http://${INTERNAL_ADDR}:9000/
-      - homepage.widget.key=${PORTAINER_API_KEY}
-      - homepage.widget.env=${PORTAINER_ENV}
-
   reset_password:
     image: portainer/helper-reset-password
     volumes:

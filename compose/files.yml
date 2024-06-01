@@ -21,8 +21,6 @@ services:
       - homepage.icon=filebrowser.png
       - homepage.href=http://${INTERNAL_ADDR}:9180/
       - homepage.description=File server
-      - homepage.widget.type=filebrowser
-      - homepage.widget.url=http://${INTERNAL_ADDR}:9180/
   transmission:
     image: lscr.io/linuxserver/transmission:latest
     restart: unless-stopped
@@ -45,5 +43,3 @@ services:
       - homepage.icon=transmission.png
       - homepage.href=http://${INTERNAL_ADDR}:9091/
       - homepage.description=Torrent client
-      - homepage.widget.type=transmission
-      - homepage.widget.url=http://${INTERNAL_ADDR}:9091/
