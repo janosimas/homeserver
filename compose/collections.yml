@@ -64,4 +64,4 @@ services:
   #       - POSTGRES_USER=koillection
   #       - POSTGRES_PASSWORD=${DB_PASSWORD}
   #   volumes:
-  #       - ${SERVICE_DATA}/postgresql:/var/lib/postgresql/data"
+  #       - ${SERVICE_DATA}/koillection/postgresql:/var/lib/postgresql/data"

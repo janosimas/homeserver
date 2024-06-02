@@ -1,6 +1,32 @@
 version: "3.7"
 
 services:
+  miniserve:
+    image: docker.io/svenstaro/miniserve
+    restart: unless-stopped
+    user: "${PUID}:${PGID}"
+    environment:
+      - TZ=${TZ} # Specify a timezone to use e.g. Europe/London.
+      - PUID=${PUID} # UID of user to take ownership of application/files
+      - PGID=${PGID} # GID of user to take ownership of application/files
+      - MINISERVE_MKDIR_ENABLED=true
+      - MINISERVE_SHOW_WGET_FOOTER=true
+      - MINISERVE_DIRS_FIRST=true
+      - MINISERVE_README=true
+      - MINISERVE_ENABLE_TAR=true
+      - MINISERVE_ENABLE_TAR_GZ=true
+    ports:
+      - 9480:8080
+    volumes:
+      - ${SHARED_DATA}/downloads:/data/downloads
+      - ${SERVICE_DATA}/miniserve/config:/config
+    labels:
+      - homepage.group=Files
+      - homepage.name=miniserve
+      - homepage.icon=miniserve.png
+      - homepage.href=http://${INTERNAL_ADDR}:9480/
+      - homepage.description=File server
+    command: /data --upload-files
   filebrowser:
     image: hurlenko/filebrowser
     restart: unless-stopped
