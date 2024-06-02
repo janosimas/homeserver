@@ -6,11 +6,4 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - /etc/localtime:/etc/localtime:ro
     command: --cleanup --remove-volumes
-    ports:
-      - 9380:8080
-    labels:
-      - homepage.group=System
-      - homepage.name=Watchtower
-      - homepage.icon=watchtower.png
-      - homepage.href=http://${INTERNAL_ADDR}:9380/
-      - homepage.description=Docker containers updater
+    restart: unless-stopped
