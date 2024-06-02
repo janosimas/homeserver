@@ -23,7 +23,7 @@ services:
     labels:
       - homepage.group=Files
       - homepage.name=miniserve
-      - homepage.icon=miniserve.png
+      - homepage.icon=files.png
       - homepage.href=http://${INTERNAL_ADDR}:9480/
       - homepage.description=File server
     command: /data --upload-files
