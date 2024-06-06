@@ -3,7 +3,6 @@ version: "3"
 services:
   koillection:
     image: koillection/koillection
-    container_name: koillection
     restart: unless-stopped
     ports:
       - 9280:80
@@ -43,7 +42,6 @@ services:
       - homepage.description=Collections manager
   db:
     image: mysql:latest
-    container_name: db
     restart: unless-stopped
     environment:
       - TZ=${TZ} # Specify a timezone to use e.g. Europe/London.
@@ -57,7 +55,6 @@ services:
       - ${SERVICE_DATA}/koillection/mysql:/var/lib/mysql
 
   #   image: postgres:16
-  #   container_name: db
   #   restart: unless-stopped
   #   environment:
   #       - POSTGRES_DB=koillection
