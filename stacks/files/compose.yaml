@@ -20,9 +20,7 @@ services:
     volumes:
       - ${SHARED_DATA}/downloads:/data/downloads
       - ${SERVICE_DATA}/miniserve/config:/config
-    env_file:
-      - path: ../.env
-      - path: .env
+    env_file: ../.env
     labels:
       - homepage.group=Files
       - homepage.name=miniserve
@@ -44,9 +42,7 @@ services:
     volumes:
       - ${SHARED_DATA}/downloads:/data
       - ${SERVICE_DATA}/filebroser/config:/config
-    env_file:
-      - path: ../.env
-      - path: .env
+    env_file: ../.env
     labels:
       - homepage.group=Files
       - homepage.name=filebrowser
@@ -69,9 +65,7 @@ services:
       - ${TRANSMISSION_UI_PORT:-9091}:9091
       - 51413:51413
       - 51413:51413/udp
-    env_file:
-      - path: ../.env
-      - path: .env
+    env_file: ../.env
     labels:
       - homepage.group=Files
       - homepage.name=Transmission

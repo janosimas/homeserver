@@ -18,9 +18,7 @@ services:
       - MAX_WORKERS=1
       - WEB_CONCURRENCY=1
       - BASE_URL=https://${INTERNAL_ADDR}
-    env_file:
-      - path: ../.env
-      - path: .env
+    env_file: ../.env
     labels:
       - homepage.group=Tools
       - homepage.name=Mealie
