@@ -23,10 +23,11 @@ services:
     networks:
       private_network:
         ipv4_address: 10.2.0.200
-
+    env_file: ../.env
   wireguard:
-    depends_on: [unbound, pihole]
+    depends_on: [ unbound, pihole ]
     image: linuxserver/wireguard
+    env_file: ../.env
     cap_add:
       - NET_ADMIN
       - SYS_MODULE
@@ -55,8 +56,9 @@ services:
         ipv4_address: 10.2.0.3
 
   pihole:
-    depends_on: [unbound]
+    depends_on: [ unbound ]
     image: pihole/pihole:latest
+    env_file: ../.env
     restart: unless-stopped
     hostname: pihole
     dns:

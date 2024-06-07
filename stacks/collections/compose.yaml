@@ -34,6 +34,7 @@ services:
     volumes:
       - ${SERVICE_DATA}/koillection/conf:/conf
       - ${SERVICE_DATA}/koillection/uploads:/uploads
+    env_file: ../.env
     labels:
       - homepage.group=Files
       - homepage.name=Koillection
@@ -53,7 +54,7 @@ services:
       - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
     volumes:
       - ${SERVICE_DATA}/koillection/mysql:/var/lib/mysql
-
+    env_file: ../.env
   #   image: postgres:16
   #   restart: unless-stopped
   #   environment:
