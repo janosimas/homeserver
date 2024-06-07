@@ -1,4 +1,4 @@
-version: "2"
+version: "3"
 
 services:
   homeassistant:
@@ -12,6 +12,7 @@ services:
       - ${SERVICE_DATA}/homeassistant/config:/config # Contains all relevant configuration files.
     ports:
       - 8123:8123
+    env_file: ../.env
     labels:
       - homepage.group=Smart Home
       - homepage.name=HomeAssistant
@@ -29,6 +30,7 @@ services:
       - PGID=${PGID} # GID of user to take ownership of application/files
     volumes:
       - ${SERVICE_DATA}/mosquitto:/mosquitto
+    env_file: ../.env
   node-red:
     image: nodered/node-red
     restart: unless-stopped
@@ -39,10 +41,9 @@ services:
       - "1880:1880/tcp"
     environment:
       - TZ=${TZ} # Specify a timezone to use e.g. Europe/London.
-      - PUID=${PUID} # UID of user to take ownership of application/files
-      - PGID=${PGID} # GID of user to take ownership of application/files
     volumes:
       - ${SERVICE_DATA}/node-red:/data
+    env_file: ../.env
     labels:
       - homepage.group=Smart Home
       - homepage.name=NodeRed
