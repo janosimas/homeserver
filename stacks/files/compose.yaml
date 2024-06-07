@@ -1,10 +1,9 @@
 version: "3.7"
-
 services:
   miniserve:
     image: docker.io/svenstaro/miniserve
     restart: unless-stopped
-    user: "${PUID}:${PGID}"
+    user: ${PUID}:${PGID}
     environment:
       - TZ=${TZ} # Specify a timezone to use e.g. Europe/London.
       - PUID=${PUID} # UID of user to take ownership of application/files
@@ -31,7 +30,7 @@ services:
   filebrowser:
     image: hurlenko/filebrowser
     restart: unless-stopped
-    user: "${PUID}:${PGID}"
+    user: ${PUID}:${PGID}
     environment:
       - TZ=${TZ} # Specify a timezone to use e.g. Europe/London.
       - PUID=${PUID} # UID of user to take ownership of application/files
@@ -40,7 +39,7 @@ services:
     ports:
       - ${FILEBROWSER_PORT:-9180}:8080
     volumes:
-      - ${SHARED_DATA}/downloads:/data
+      - ${SHARED_DATA}/downloads:/data/downloads
       - ${SERVICE_DATA}/filebroser/config:/config
     env_file: ../.env
     labels:
@@ -72,3 +71,4 @@ services:
       - homepage.icon=transmission.png
       - homepage.href=http://${INTERNAL_ADDR}:${TRANSMISSION_UI_PORT:-9091}/
       - homepage.description=Torrent client
+networks: {}

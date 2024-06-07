@@ -14,6 +14,7 @@ services:
       - ${SHARED_DATA}/books:/books # Where your calibre database is located
     ports:
       - 8083:8083
+    env_file: ../.env
     labels:
       - homepage.group=Media
       - homepage.name=Calibre-Web
@@ -33,6 +34,7 @@ services:
       - ${SERVICE_DATA}/audiobookshelf/metadata:/metadata
       - ${SERVICE_DATA}/audiobookshelf/config:/config
       - ${SHARED_DATA}/audiobooks:/audiobooks
+    env_file: ../.env
     labels:
       - homepage.group=Media
       - homepage.name=AudioBookShelf
@@ -62,10 +64,11 @@ services:
       - 8080:8080
       - 8181:8181
       - 8081:8081
+    env_file: ../.env
     labels:
       - homepage.group=Media
       - homepage.name=Calibre
       - homepage.icon=calibre.png
       - homepage.href=http://${INTERNAL_ADDR}:8080/
       - homepage.description=Ebook server
-    profiles: ["dev"]
+    profiles: [ "dev" ]
