@@ -16,15 +16,18 @@ services:
       - MINISERVE_ENABLE_TAR=true
       - MINISERVE_ENABLE_TAR_GZ=true
     ports:
-      - 9480:8080
+      - ${MINISERVE_PORT:-9480}:8080
     volumes:
       - ${SHARED_DATA}/downloads:/data/downloads
       - ${SERVICE_DATA}/miniserve/config:/config
+    env_file:
+      - path: ../.env
+      - path: .env
     labels:
       - homepage.group=Files
       - homepage.name=miniserve
       - homepage.icon=files.png
-      - homepage.href=http://${INTERNAL_ADDR}:9480/
+      - homepage.href=http://${INTERNAL_ADDR}:${MINISERVE_PORT:-9480}/
       - homepage.description=File server
     command: /data --upload-files
   filebrowser:
@@ -37,15 +40,18 @@ services:
       - PGID=${PGID} # GID of user to take ownership of application/files
       - FB_BASEURL=/filebrowser
     ports:
-      - 9180:8080
+      - ${FILEBROWSER_PORT:-9180}:8080
     volumes:
       - ${SHARED_DATA}/downloads:/data
       - ${SERVICE_DATA}/filebroser/config:/config
+    env_file:
+      - path: ../.env
+      - path: .env
     labels:
       - homepage.group=Files
       - homepage.name=filebrowser
       - homepage.icon=filebrowser.png
-      - homepage.href=http://${INTERNAL_ADDR}:9180/
+      - homepage.href=http://${INTERNAL_ADDR}:${FILEBROWSER_PORT:-9180}/
       - homepage.description=File server
   transmission:
     image: lscr.io/linuxserver/transmission:latest
@@ -60,12 +66,15 @@ services:
       - ${SHARED_DATA}/downloads:/downloads
       - ${SHARED_DATA}/watch:/watch
     ports:
-      - 9091:9091
+      - ${TRANSMISSION_UI_PORT:-9091}:9091
       - 51413:51413
       - 51413:51413/udp
+    env_file:
+      - path: ../.env
+      - path: .env
     labels:
       - homepage.group=Files
       - homepage.name=Transmission
       - homepage.icon=transmission.png
-      - homepage.href=http://${INTERNAL_ADDR}:9091/
+      - homepage.href=http://${INTERNAL_ADDR}:${TRANSMISSION_UI_PORT:-9091}/
       - homepage.description=Torrent client
