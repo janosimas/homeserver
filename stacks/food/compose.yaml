@@ -9,7 +9,7 @@ services:
         limits:
           memory: 1000M
     volumes:
-      - ${SERVICE_DATADIR}/mealie/data:/app/data/
+      - ${SERVICE_DATA}/mealie/data:/app/data/
     environment:
       - ALLOW_SIGNUP=true
       - PUID=${PUID}
