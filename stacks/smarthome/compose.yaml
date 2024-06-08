@@ -34,6 +34,7 @@ services:
   node-red:
     image: nodered/node-red
     restart: unless-stopped
+    user: ${PUID}:${PGID}
     depends_on:
       - homeassistant
       - mosquitto
@@ -41,6 +42,8 @@ services:
       - "1880:1880/tcp"
     environment:
       - TZ=${TZ} # Specify a timezone to use e.g. Europe/London.
+      - PUID=${PUID} # UID of user to take ownership of application/files
+      - PGID=${PGID} # GID of user to take ownership of application/files
     volumes:
       - ${SERVICE_DATA}/node-red:/data
     env_file: ../.env
