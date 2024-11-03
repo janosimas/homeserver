@@ -1,9 +1,7 @@
 services:
   mealie:
     image: ghcr.io/mealie-recipes/mealie:v1.8.0
-    restart: unless-stopped
-    ports:
-      - ${MEALIE_PORT:-9925}:9000
+    restart: always
     deploy:
       resources:
         limits:
@@ -17,11 +15,24 @@ services:
       - TZ=${TZ}
       - MAX_WORKERS=1
       - WEB_CONCURRENCY=1
-      - BASE_URL=https://${INTERNAL_ADDR}
+      - BASE_URL=http://mealie.mistborn/
     env_file: ../.env
     labels:
       - homepage.group=Tools
       - homepage.name=Mealie
       - homepage.icon=mealie.png
-      - homepage.href=http://${INTERNAL_ADDR}:${MEALIE_PORT:-9925}/
+      - homepage.href=http://mealie.mistborn/
       - homepage.description=Recipe manager
+      - "traefik.enable=true"
+      - "traefik.http.routers.mealie-http.rule=Host(`mealie.mistborn`)"
+      - "traefik.http.routers.mealie-http.entrypoints=web"
+      - "traefik.http.routers.mealie-http.middlewares=mistborn_auth@file"
+      - "traefik.http.routers.mealie-https.rule=Host(`mealie.mistborn`)"
+      - "traefik.http.routers.mealie-https.entrypoints=websecure"
+      - "traefik.http.routers.mealie-https.middlewares=mistborn_auth@file"
+      - "traefik.http.routers.mealie-https.tls.certresolver=basic"
+      - "traefik.http.services.mealie-service.loadbalancer.server.port=9000"
+networks:
+  default:
+    name: mistborn_default
+    external: true

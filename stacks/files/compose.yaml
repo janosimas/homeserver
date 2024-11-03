@@ -14,8 +14,6 @@ services:
       - MINISERVE_README=true
       - MINISERVE_ENABLE_TAR=true
       - MINISERVE_ENABLE_TAR_GZ=true
-    ports:
-      - ${MINISERVE_PORT:-9480}:8080
     volumes:
       - ${SHARED_DATA}/downloads:/data/downloads
       - ${SERVICE_DATA}/miniserve/config:/config
@@ -24,8 +22,17 @@ services:
       - homepage.group=Files
       - homepage.name=miniserve
       - homepage.icon=files.png
-      - homepage.href=http://${INTERNAL_ADDR}:${MINISERVE_PORT:-9480}/
+      - homepage.href=http://miniserve.mistborn/
       - homepage.description=File server
+      - "traefik.enable=true"
+      - "traefik.http.routers.miniserve-http.rule=Host(`miniserve.mistborn`)"
+      - "traefik.http.routers.miniserve-http.entrypoints=web"
+      - "traefik.http.routers.miniserve-http.middlewares=mistborn_auth@file"
+      - "traefik.http.routers.miniserve-https.rule=Host(`miniserve.mistborn`)"
+      - "traefik.http.routers.miniserve-https.entrypoints=websecure"
+      - "traefik.http.routers.miniserve-https.middlewares=mistborn_auth@file"
+      - "traefik.http.routers.miniserve-https.tls.certresolver=basic"
+      - "traefik.http.services.miniserve-service.loadbalancer.server.port=8080"
     command: /data --upload-files
   filebrowser:
     image: hurlenko/filebrowser
@@ -36,8 +43,6 @@ services:
       - PUID=${PUID} # UID of user to take ownership of application/files
       - PGID=${PGID} # GID of user to take ownership of application/files
       - FB_BASEURL=/filebrowser
-    ports:
-      - ${FILEBROWSER_PORT:-9180}:8080
     volumes:
       - ${SHARED_DATA}/downloads:/data/downloads
       - ${SERVICE_DATA}/filebroser/config:/config
@@ -46,8 +51,17 @@ services:
       - homepage.group=Files
       - homepage.name=filebrowser
       - homepage.icon=filebrowser.png
-      - homepage.href=http://${INTERNAL_ADDR}:${FILEBROWSER_PORT:-9180}/
+      - homepage.href=http://filebrowser.mistborn/
       - homepage.description=File server
+      - "traefik.enable=true"
+      - "traefik.http.routers.filebrowser-http.rule=Host(`filebrowser.mistborn`)"
+      - "traefik.http.routers.filebrowser-http.entrypoints=web"
+      - "traefik.http.routers.filebrowser-http.middlewares=mistborn_auth@file"
+      - "traefik.http.routers.filebrowser-https.rule=Host(`filebrowser.mistborn`)"
+      - "traefik.http.routers.filebrowser-https.entrypoints=websecure"
+      - "traefik.http.routers.filebrowser-https.middlewares=mistborn_auth@file"
+      - "traefik.http.routers.filebrowser-https.tls.certresolver=basic"
+      - "traefik.http.services.filebrowser-service.loadbalancer.server.port=8080"
   transmission:
     image: lscr.io/linuxserver/transmission:latest
     restart: unless-stopped
@@ -60,15 +74,23 @@ services:
       - ${SERVICE_DATA}/transmission/config:/config
       - ${SHARED_DATA}/downloads:/downloads
       - ${SHARED_DATA}/watch:/watch
-    ports:
-      - ${TRANSMISSION_UI_PORT:-9091}:9091
-      - 51413:51413
-      - 51413:51413/udp
     env_file: ../.env
     labels:
       - homepage.group=Files
       - homepage.name=Transmission
       - homepage.icon=transmission.png
-      - homepage.href=http://${INTERNAL_ADDR}:${TRANSMISSION_UI_PORT:-9091}/
+      - homepage.href=http://transmission.mistborn/
       - homepage.description=Torrent client
-networks: {}
+      - "traefik.enable=true"
+      - "traefik.http.routers.transmission-http.rule=Host(`transmission.mistborn`)"
+      - "traefik.http.routers.transmission-http.entrypoints=web"
+      - "traefik.http.routers.transmission-http.middlewares=mistborn_auth@file"
+      - "traefik.http.routers.transmission-https.rule=Host(`transmission.mistborn`)"
+      - "traefik.http.routers.transmission-https.entrypoints=websecure"
+      - "traefik.http.routers.transmission-https.middlewares=mistborn_auth@file"
+      - "traefik.http.routers.transmission-https.tls.certresolver=basic"
+      - "traefik.http.services.transmission-service.loadbalancer.server.port=9091"
+networks:
+  default:
+    name: mistborn_default
+    external: true

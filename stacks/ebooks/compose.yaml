@@ -12,15 +12,22 @@ services:
     volumes:
       - ${SERVICE_DATA}/calibre/config:/config # Where calibre-web stores the internal database and config.
       - ${SHARED_DATA}/books:/books # Where your calibre database is located
-    ports:
-      - 8083:8083
     env_file: ../.env
     labels:
       - homepage.group=Media
       - homepage.name=Calibre-Web
       - homepage.icon=calibre-web.png
-      - homepage.href=http://${INTERNAL_ADDR}:8083/
+      - homepage.href=http://calibreweb.mistborn/
       - homepage.description=Ebook server
+      - "traefik.enable=true"
+      - "traefik.http.routers.calibreweb-http.rule=Host(`calibreweb.mistborn`)"
+      - "traefik.http.routers.calibreweb-http.entrypoints=web"
+      - "traefik.http.routers.calibreweb-http.middlewares=mistborn_auth@file"
+      - "traefik.http.routers.calibreweb-https.rule=Host(`calibreweb.mistborn`)"
+      - "traefik.http.routers.calibreweb-https.entrypoints=websecure"
+      - "traefik.http.routers.calibreweb-https.middlewares=mistborn_auth@file"
+      - "traefik.http.routers.calibreweb-https.tls.certresolver=basic"
+      - "traefik.http.services.calibreweb-service.loadbalancer.server.port=8083"
   audiobookshelf:
     image: ghcr.io/advplyr/audiobookshelf:latest
     restart: unless-stopped
@@ -28,8 +35,6 @@ services:
       - TZ=${TZ} # Specify a timezone to use e.g. Europe/London.
       - PUID=${PUID} # UID of user to take ownership of application/files
       - PGID=${PGID} # GID of user to take ownership of application/files
-    ports:
-      - 13378:80
     volumes:
       - ${SERVICE_DATA}/audiobookshelf/metadata:/metadata
       - ${SERVICE_DATA}/audiobookshelf/config:/config
@@ -39,11 +44,20 @@ services:
       - homepage.group=Media
       - homepage.name=AudioBookShelf
       - homepage.icon=audiobookshelf.png
-      - homepage.href=http://${INTERNAL_ADDR}:13378/
+      - homepage.href=http://audiobookshelf.mistborn/
       - homepage.description=Audiobook server
       - homepage.widget.type=audiobookshelf
-      - homepage.widget.url=http://${INTERNAL_ADDR}:13378/
+      - homepage.widget.url=http://audiobookshelf.mistborn/
       - homepage.widget.key=${AUDIOBOOKSHELF_API_KEY}
+      - "traefik.enable=true"
+      - "traefik.http.routers.audiobookshelf-http.rule=Host(`audiobookshelf.mistborn`)"
+      - "traefik.http.routers.audiobookshelf-http.entrypoints=web"
+      - "traefik.http.routers.audiobookshelf-http.middlewares=mistborn_auth@file"
+      - "traefik.http.routers.audiobookshelf-https.rule=Host(`audiobookshelf.mistborn`)"
+      - "traefik.http.routers.audiobookshelf-https.entrypoints=websecure"
+      - "traefik.http.routers.audiobookshelf-https.middlewares=mistborn_auth@file"
+      - "traefik.http.routers.audiobookshelf-https.tls.certresolver=basic"
+      - "traefik.http.services.audiobookshelf-service.loadbalancer.server.port=80"
   calibre:
     image: linuxserver/calibre
     restart: unless-stopped
@@ -60,15 +74,25 @@ services:
       - ${SERVICE_DATA}/calibre/config:/config # Where calibre stores the internal database and config.
       - ${SHARED_DATA}/books:/books # Where your calibre database is located
       - ${SHARED_DATA}:/shared
-    ports:
-      - 8080:8080
-      - 8181:8181
-      - 8081:8081
     env_file: ../.env
     labels:
       - homepage.group=Media
       - homepage.name=Calibre
       - homepage.icon=calibre.png
-      - homepage.href=http://${INTERNAL_ADDR}:8080/
+      - homepage.href=http://calibre.mistborn/
       - homepage.description=Ebook server
+      - "traefik.enable=true"
+      - "traefik.http.routers.calibre-http.rule=Host(`calibre.mistborn`)"
+      - "traefik.http.routers.calibre-http.entrypoints=web"
+      - "traefik.http.routers.calibre-http.middlewares=mistborn_auth@file"
+      - "traefik.http.routers.calibre-https.rule=Host(`calibre.mistborn`)"
+      - "traefik.http.routers.calibre-https.entrypoints=websecure"
+      - "traefik.http.routers.calibre-https.middlewares=mistborn_auth@file"
+      - "traefik.http.routers.calibre-https.tls.certresolver=basic"
+      - "traefik.http.services.calibre-service.loadbalancer.server.port=8080"
     profiles: [ "dev" ]
+
+networks:
+  default:
+    name: mistborn_default
+    external: true

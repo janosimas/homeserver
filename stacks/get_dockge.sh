@@ -16,11 +16,25 @@ echo """
       - homepage.group=System
       - homepage.name=Dockge
       - homepage.icon=dockge.png
-      - homepage.href=http://${INTERNAL_ADDR}:${DOCKGE_PORT}/
-      - homepage.description=Docker compose manager""" >> "${COMPOSE_FILE}"
+      - homepage.href=http://dockge.mistborn/
+      - homepage.description=Docker compose manager
+      - "traefik.enable=true"
+      - "traefik.http.routers.dockge-http.rule=Host(`dockge.mistborn`)"
+      - "traefik.http.routers.dockge-http.entrypoints=web"
+      - "traefik.http.routers.dockge-http.middlewares=mistborn_auth@file"
+      - "traefik.http.routers.dockge-https.rule=Host(`dockge.mistborn`)"
+      - "traefik.http.routers.dockge-https.entrypoints=websecure"
+      - "traefik.http.routers.dockge-https.middlewares=mistborn_auth@file"
+      - "traefik.http.routers.dockge-https.tls.certresolver=basic"
+      - "traefik.http.services.dockge-service.loadbalancer.server.port=${DOCKGE_PORT}"
+networks:
+  default:
+    name: mistborn_default
+    external: true""" >> "${COMPOSE_FILE}"
 
 if [[ "${SERVICE_DATA}" ]] && grep -Fq '${SERVICE_DATA}/dockge/data:' ${COMPOSE_FILE}; then
-    docker compose up -d
+    # docker compose up -d
+    echo foo
 else
     echo
     echo "> Error initializing Dockge!"

@@ -4,8 +4,6 @@ services:
   koillection:
     image: koillection/koillection
     restart: unless-stopped
-    ports:
-      - 9280:80
     depends_on:
       - db
     environment:
@@ -39,8 +37,17 @@ services:
       - homepage.group=Files
       - homepage.name=Koillection
       - homepage.icon=koillection.png
-      - homepage.href=http://${INTERNAL_ADDR}:9280/
+      - homepage.href=http://koillection.mistborn/
       - homepage.description=Collections manager
+      - "traefik.enable=true"
+      - "traefik.http.routers.koillection-http.rule=Host(`koillection.mistborn`)"
+      - "traefik.http.routers.koillection-http.entrypoints=web"
+      - "traefik.http.routers.koillection-http.middlewares=mistborn_auth@file"
+      - "traefik.http.routers.koillection-https.rule=Host(`koillection.mistborn`)"
+      - "traefik.http.routers.koillection-https.entrypoints=websecure"
+      - "traefik.http.routers.koillection-https.middlewares=mistborn_auth@file"
+      - "traefik.http.routers.koillection-https.tls.certresolver=basic"
+      - "traefik.http.services.koillection-service.loadbalancer.server.port=80"
   db:
     image: mysql:latest
     restart: unless-stopped
@@ -55,6 +62,10 @@ services:
     volumes:
       - ${SERVICE_DATA}/koillection/mysql:/var/lib/mysql
     env_file: ../.env
+networks:
+  default:
+    name: mistborn_default
+    external: true
   #   image: postgres:16
   #   restart: unless-stopped
   #   environment:

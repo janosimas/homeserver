@@ -5,8 +5,20 @@ services:
     restart: always
     env_file: ../.env
     user: ${PUID}:${DOKER_GID}
-    ports:
-      - 3000:3000
     volumes:
       - ${SERVICE_DATA}/homepage/config:/app/config # Make sure your local config directory exists
       - /var/run/docker.sock:/var/run/docker.sock:ro # (optional) For docker integrations
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.homepage-http.rule=Host(`homepage.mistborn`)"
+      - "traefik.http.routers.homepage-http.entrypoints=web"
+      - "traefik.http.routers.homepage-http.middlewares=mistborn_auth@file"
+      - "traefik.http.routers.homepage-https.rule=Host(`homepage.mistborn`)"
+      - "traefik.http.routers.homepage-https.entrypoints=websecure"
+      - "traefik.http.routers.homepage-https.middlewares=mistborn_auth@file"
+      - "traefik.http.routers.homepage-https.tls.certresolver=basic"
+      - "traefik.http.services.homepage-service.loadbalancer.server.port=3000"
+networks:
+  default:
+    name: mistborn_default
+    external: true
