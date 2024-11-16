@@ -8,12 +8,13 @@ services:
       - TZ=${TZ} # Specify a timezone to use e.g. Europe/London.
       - PUID=${PUID} # UID of user to take ownership of application/files
       - PGID=${PGID} # GID of user to take ownership of application/files
-      - DOCKER_MODS=linuxserver/mods:universal-calibre
+      - DOCKER_MODS=linuxserver/mods:universal-calibre|linuxserver/mods:calibre-web-dtrpg-metadata
     volumes:
       - ${SERVICE_DATA}/calibre/config:/config # Where calibre-web stores the internal database and config.
       - ${SHARED_DATA}/books:/books # Where your calibre database is located
     ports:
       - 8083:8083
+    env_file: ../.env
     labels:
       - homepage.group=Media
       - homepage.name=Calibre-Web
@@ -33,6 +34,7 @@ services:
       - ${SERVICE_DATA}/audiobookshelf/metadata:/metadata
       - ${SERVICE_DATA}/audiobookshelf/config:/config
       - ${SHARED_DATA}/audiobooks:/audiobooks
+    env_file: ../.env
     labels:
       - homepage.group=Media
       - homepage.name=AudioBookShelf
@@ -62,10 +64,11 @@ services:
       - 8080:8080
       - 8181:8181
       - 8081:8081
+    env_file: ../.env
     labels:
       - homepage.group=Media
       - homepage.name=Calibre
       - homepage.icon=calibre.png
       - homepage.href=http://${INTERNAL_ADDR}:8080/
       - homepage.description=Ebook server
-    profiles: ["dev"]
+    profiles: [ "dev" ]

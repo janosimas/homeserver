@@ -3,13 +3,13 @@ services:
     image: ghcr.io/mealie-recipes/mealie:v1.8.0
     restart: unless-stopped
     ports:
-      - 9925:9000
+      - ${MEALIE_PORT:-9925}:9000
     deploy:
       resources:
         limits:
           memory: 1000M
     volumes:
-      - ${SERVICE_DATADIR}/mealie/data:/app/data/
+      - ${SERVICE_DATA}/mealie/data:/app/data/
     environment:
       - ALLOW_SIGNUP=true
       - PUID=${PUID}
@@ -18,9 +18,10 @@ services:
       - MAX_WORKERS=1
       - WEB_CONCURRENCY=1
       - BASE_URL=https://${INTERNAL_ADDR}
+    env_file: ../.env
     labels:
       - homepage.group=Tools
       - homepage.name=Mealie
       - homepage.icon=mealie.png
-      - homepage.href=http://${INTERNAL_ADDR}:9925/
+      - homepage.href=http://${INTERNAL_ADDR}:${MEALIE_PORT:-9925}/
       - homepage.description=Recipe manager
