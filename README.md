@@ -4,12 +4,12 @@ This repository is a collection of scripts and configuration files to help setti
 
 **IMPORTANT**: These are experiments and should not be considered production ready or safe
 
-# Ansible
-
-When using ansible, set the variables in `ansible/vars/main_vars.yml`
-
 ## Containers
 
-The services can be started using the `start_service.sh` script.
+Before starting the services, create a `stacks/.env` based on `stacks/.env.sample` and fill it in.
 
-This script assumes that the `ansible/setup_playbook.yml` was executed.
+to start a service use the command: `docker compose --env-file ../.env up -d`
+
+# Ansible
+
+*Ansible is not ready to be used*
