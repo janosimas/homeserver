@@ -1,4 +1,3 @@
-version: "3.7"
 services:
   miniserve:
     image: docker.io/svenstaro/miniserve
@@ -26,6 +25,9 @@ services:
       - homepage.icon=files.png
       - homepage.href=http://${INTERNAL_ADDR}:${MINISERVE_PORT:-9480}/
       - homepage.description=File server
+      - traefik.enable=true
+      - traefik.http.routers.whoami.rule=Host(`miniserve.home.server`)
+      - traefik.http.routers.whoami.entrypoints=web
     command: /data --upload-files
   filebrowser:
     image: hurlenko/filebrowser

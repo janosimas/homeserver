@@ -1,6 +1,4 @@
-# Original: https://github.com/IAmStoxe/wirehole
-
-version: "3"
+# Original version: https://github.com/m-karakus/wirehole
 
 networks:
   private_network:
@@ -11,75 +9,123 @@ networks:
 
 services:
   unbound:
-    image: "mvance/unbound:latest"
+    image: mvance/unbound:latest
+    container_name: unbound
     restart: unless-stopped
-    hostname: "unbound"
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TZ}
+    hostname: unbound
     volumes:
-      - "${SERVICE_DATA}/unbound:/opt/unbound/etc/unbound/"
+      - ${SERVICE_DATA}/unbound:/opt/unbound/etc/unbound/
     networks:
       private_network:
         ipv4_address: 10.2.0.200
-    env_file: ../.env
-  wireguard:
-    depends_on: [ unbound, pihole ]
-    image: linuxserver/wireguard
-    env_file: ../.env
+
+  wg-easy:
+    depends_on:
+      - unbound
+      - pihole
+    image: weejewel/wg-easy:7
+    container_name: wg-easy
+    environment:
+      - PUID=${PUID} # UID of user to take ownership of application/files
+      - PGID=${PGID} # GID of user to take ownership of application/files
+      - TZ=${TZ}
+
+      # ⚠️ Required:
+      # Change this to your host's public address
+      - WG_HOST=${EXTERNAL_ADDR}
+
+      # Optional:
+      - PASSWORD=${WG_PASSWORD}
+      - WG_PORT=51820
+      - WG_DEFAULT_ADDRESS=10.3.0.x
+      - WG_DEFAULT_DNS=10.2.0.100
+      # - WG_ALLOWED_IPS=192.168.0.0/24,10.2.0.0/24,10.3.0.0/24 # If you want only LAN access open this.
+    volumes:
+      - ${SERVICE_DATA}/wireguard:/etc/wireguard
+    ports:
+      - "51820:51820/udp"
+      - "51821:51821/tcp"
+    restart: unless-stopped
     cap_add:
       - NET_ADMIN
       - SYS_MODULE
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TZ}
-      - SERVERPORT=${EXTERNAL_PORT}
-      - SERVERURL=${EXTERNAL_ADDR}
-      - PEERS=1 # How many peers to generate for you (clients)
-      - PEERDNS=10.2.0.100 # Set it to point to pihole
-      - INTERNAL_SUBNET=10.6.0.0
-    volumes:
-      - ${SERVICE_DATA}/wireguard:/config
-      - /lib/modules:/lib/modules
-    ports:
-      - "${EXTERNAL_PORT}:51820/udp"
+    sysctls:
+      - net.ipv4.ip_forward=1
+      - net.ipv4.conf.all.src_valid_mark=1
     dns:
       - 10.2.0.100 # Points to pihole
       - 10.2.0.200 # Points to unbound
-    sysctls:
-      - net.ipv4.conf.all.src_valid_mark=1
-    restart: unless-stopped
     networks:
       private_network:
         ipv4_address: 10.2.0.3
-
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.wireguard.rule=Host(`wireguard.server.home`)"
+      - "traefik.http.routers.wireguard.entrypoints=web"
+      - "traefik.http.services.wireguard.loadbalancer.server.port=51821"
   pihole:
-    depends_on: [ unbound ]
-    image: pihole/pihole:latest
-    env_file: ../.env
-    restart: unless-stopped
+    depends_on:
+      - unbound
+    container_name: pihole
+    image: pihole/pihole:2023.10.0
     hostname: pihole
+    restart: unless-stopped
     dns:
       - 127.0.0.1
       - 10.2.0.200 # Points to unbound
     environment:
-      PUID: ${PUID}
-      PGID: ${PGID}
+      PUID: ${PUID} # UID of user to take ownership of application/files
+      PGID: ${PGID} # GID of user to take ownership of application/files
       TZ: ${TZ}
-      WEBPASSWORD: "" # Blank password - Can be whatever you want.
-      ServerIP: 10.2.0.100 # Internal IP of pihole
+      WEBPASSWORD: ${PIHOLE_PASSWORD} # Blank password - Can be whatever you want.
+      ServerIP: 192.168.2.28 # Internal IP of pihole
       DNS1: 10.2.0.200 # Unbound IP
       DNS2: 10.2.0.200 # If we don't specify two, it will auto pick google.
     # Volumes store your data between container upgrades
     volumes:
-      - "${SERVICE_DATA}/pihole/:/etc/pihole/"
-      - "${SERVICE_DATA}/dnsmasq.d/:/etc/dnsmasq.d/"
-    # Recommended but not required (DHCP needs NET_ADMIN)
-    #   https://github.com/pi-hole/docker-pi-hole#note-on-capabilities
+      - ${SERVICE_DATA}/pihole/etc-pihole/:/etc/pihole/
+      - ${SERVICE_DATA}/pihole/etc-dnsmasq.d/:/etc/dnsmasq.d/
     cap_add:
       - NET_ADMIN
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+      - "67:67/udp" # Only required if you are using Pi-hole as your DHCP server
+      - "8081:80"
     networks:
       private_network:
         ipv4_address: 10.2.0.100
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.pihole.rule=Host(`pihole.server.home`)"
+      - "traefik.http.routers.pihole.entrypoints=web"
+      - "traefik.http.services.pihole.loadbalancer.server.port=80"
+  traefik:
+    image: "traefik:v3.2"
+    command:
+      - "--log.level=DEBUG"
+      - "--api.insecure=true"
+      - "--api.dashboard=true"
+      - "--api.debug=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entryPoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    dns:
+      - 10.2.0.100 # Points to pihole
+      - 10.2.0.200 # Points to unbound
+    networks:
+      host:
+      private_network:
+        ipv4_address: 10.2.0.4
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.traefik.rule=Host(`traefik.server.home`)"
+      - "traefik.http.routers.traefik.entrypoints=web"
+      - "traefik.http.services.traefik.loadbalancer.server.port=8080"
