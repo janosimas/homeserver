@@ -1,11 +1,11 @@
-version: "3"
+networks:
+  internal_network:
+    external: true
 
 services:
   koillection:
     image: koillection/koillection
     restart: unless-stopped
-    ports:
-      - 9280:80
     depends_on:
       - db
     environment:
@@ -39,8 +39,14 @@ services:
       - homepage.group=Files
       - homepage.name=Koillection
       - homepage.icon=koillection.png
-      - homepage.href=http://${INTERNAL_ADDR}:9280/
+      - homepage.href=http://koillection.server.home/
       - homepage.description=Collections manager
+      - traefik.enable=true
+      - traefik.http.routers.koillection.rule=Host(`koillection.server.home`)
+      - traefik.http.routers.koillection.entrypoints=web
+      - traefik.http.services.koillection.loadbalancer.server.port=80
+    networks:
+      internal_network:
   db:
     image: mysql:latest
     restart: unless-stopped

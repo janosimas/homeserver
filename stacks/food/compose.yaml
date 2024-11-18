@@ -1,9 +1,11 @@
+networks:
+  internal_network:
+    external: true
+
 services:
   mealie:
     image: ghcr.io/mealie-recipes/mealie:v1.8.0
     restart: unless-stopped
-    ports:
-      - ${MEALIE_PORT:-9925}:9000
     deploy:
       resources:
         limits:
@@ -17,11 +19,17 @@ services:
       - TZ=${TZ}
       - MAX_WORKERS=1
       - WEB_CONCURRENCY=1
-      - BASE_URL=https://${INTERNAL_ADDR}
+      - BASE_URL=https://mealie.server.home
     env_file: ../.env
     labels:
       - homepage.group=Tools
       - homepage.name=Mealie
       - homepage.icon=mealie.png
-      - homepage.href=http://${INTERNAL_ADDR}:${MEALIE_PORT:-9925}/
+      - homepage.href=http://mealie.server.home/
       - homepage.description=Recipe manager
+      - traefik.enable=true
+      - traefik.http.routers.mealie.rule=Host(`mealie.server.home`)
+      - traefik.http.routers.mealie.entrypoints=web
+      - traefik.http.services.mealie.loadbalancer.server.port=9000
+    networks:
+      internal_network:

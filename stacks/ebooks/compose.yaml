@@ -1,4 +1,6 @@
-version: "3.7"
+networks:
+  internal_network:
+    external: true
 
 services:
   calibre_web:
@@ -12,15 +14,19 @@ services:
     volumes:
       - ${SERVICE_DATA}/calibre/config:/config # Where calibre-web stores the internal database and config.
       - ${SHARED_DATA}/books:/books # Where your calibre database is located
-    ports:
-      - 8083:8083
+    networks:
+      internal_network:
     env_file: ../.env
     labels:
       - homepage.group=Media
       - homepage.name=Calibre-Web
       - homepage.icon=calibre-web.png
-      - homepage.href=http://${INTERNAL_ADDR}:8083/
+      - homepage.href=http://calibre_web.server.home
       - homepage.description=Ebook server
+      - traefik.enable=true
+      - traefik.http.routers.calibre_web.rule=Host(`calibre_web.server.home`)
+      - traefik.http.routers.calibre_web.entrypoints=web
+      - traefik.http.services.calibre_web.loadbalancer.server.port=8083
   audiobookshelf:
     image: ghcr.io/advplyr/audiobookshelf:latest
     restart: unless-stopped
@@ -28,8 +34,8 @@ services:
       - TZ=${TZ} # Specify a timezone to use e.g. Europe/London.
       - PUID=${PUID} # UID of user to take ownership of application/files
       - PGID=${PGID} # GID of user to take ownership of application/files
-    ports:
-      - 13378:80
+    networks:
+      internal_network:
     volumes:
       - ${SERVICE_DATA}/audiobookshelf/metadata:/metadata
       - ${SERVICE_DATA}/audiobookshelf/config:/config
@@ -39,11 +45,15 @@ services:
       - homepage.group=Media
       - homepage.name=AudioBookShelf
       - homepage.icon=audiobookshelf.png
-      - homepage.href=http://${INTERNAL_ADDR}:13378/
+      - homepage.href=http://audiobookshelf.server.home
       - homepage.description=Audiobook server
       - homepage.widget.type=audiobookshelf
-      - homepage.widget.url=http://${INTERNAL_ADDR}:13378/
+      - homepage.widget.url=http://audiobookshelf.server.home
       - homepage.widget.key=${AUDIOBOOKSHELF_API_KEY}
+      - traefik.enable=true
+      - traefik.http.routers.audiobookshelf.rule=Host(`audiobookshelf.server.home`)
+      - traefik.http.routers.audiobookshelf.entrypoints=web
+      - traefik.http.services.audiobookshelf.loadbalancer.server.port=80
   calibre:
     image: linuxserver/calibre
     restart: unless-stopped

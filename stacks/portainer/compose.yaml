@@ -1,4 +1,6 @@
-version: "2"
+networks:
+  internal_network:
+    external: true
 
 services:
   portainer:
@@ -15,8 +17,14 @@ services:
       - homepage.group=System
       - homepage.name=Portainer
       - homepage.icon=portainer.png
-      - homepage.href=http://${INTERNAL_ADDR}:9000/
+      - homepage.href=http://portainer.server.home
       - homepage.description=Containers manager
+      - traefik.enable=true
+      - traefik.http.routers.portainer.rule=Host(`portainer.server.home`)
+      - traefik.http.routers.portainer.entrypoints=web
+      - traefik.http.services.portainer.loadbalancer.server.port=9000
+    networks:
+      internal_network:
   reset_password:
     image: portainer/helper-reset-password
     volumes:

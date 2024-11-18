@@ -1,4 +1,6 @@
-version: "3"
+networks:
+  internal_network:
+    external: true
 
 services:
   homeassistant:
@@ -10,20 +12,22 @@ services:
       - PGID=${PGID} # GID of user to take ownership of application/files
     volumes:
       - ${SERVICE_DATA}/homeassistant/config:/config # Contains all relevant configuration files.
-    ports:
-      - 8123:8123
     env_file: ../.env
     labels:
       - homepage.group=Smart Home
       - homepage.name=HomeAssistant
       - homepage.icon=home-assistant.png
-      - homepage.href=http://${INTERNAL_ADDR}:8123/
+      - homepage.href=http://homeassistant.server.home
       - homepage.description=Smart home automation manager
+      - traefik.enable=true
+      - traefik.http.routers.homeassistant.rule=Host(`homeassistant.server.home`)
+      - traefik.http.routers.homeassistant.entrypoints=web
+      - traefik.http.services.homeassistant.loadbalancer.server.port=8123
+    networks:
+      internal_network:
   mosquitto:
     image: eclipse-mosquitto
     restart: unless-stopped
-    ports:
-      - "1883:1883/tcp"
     environment:
       - TZ=${TZ} # Specify a timezone to use e.g. Europe/London.
       - PUID=${PUID} # UID of user to take ownership of application/files
@@ -31,6 +35,13 @@ services:
     volumes:
       - ${SERVICE_DATA}/mosquitto:/mosquitto
     env_file: ../.env
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.mosquitto.rule=Host(`mosquitto.server.home`)
+      - traefik.http.routers.mosquitto.entrypoints=web
+      - traefik.http.services.mosquitto.loadbalancer.server.port=1883
+    networks:
+      internal_network:
   node-red:
     image: nodered/node-red
     restart: unless-stopped
@@ -38,8 +49,6 @@ services:
     depends_on:
       - homeassistant
       - mosquitto
-    ports:
-      - "1880:1880/tcp"
     environment:
       - TZ=${TZ} # Specify a timezone to use e.g. Europe/London.
       - PUID=${PUID} # UID of user to take ownership of application/files
@@ -51,5 +60,11 @@ services:
       - homepage.group=Smart Home
       - homepage.name=NodeRed
       - homepage.icon=node-red.png
-      - homepage.href=http://${INTERNAL_ADDR}:1880/
+      - homepage.href=http://nodered.server.home
       - homepage.description=Smart home automation
+      - traefik.enable=true
+      - traefik.http.routers.nodered.rule=Host(`nodered.server.home`)
+      - traefik.http.routers.nodered.entrypoints=web
+      - traefik.http.services.nodered.loadbalancer.server.port=1880
+    networks:
+      internal_network:
