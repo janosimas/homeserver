@@ -93,6 +93,8 @@ services:
       - "53:53/udp"
       - "67:67/udp" # Only required if you are using Pi-hole as your DHCP server
       - "8081:80"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     networks:
       internal_network:
         ipv4_address: 10.2.0.100
