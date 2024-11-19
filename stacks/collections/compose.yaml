@@ -61,11 +61,13 @@ services:
     volumes:
       - ${SERVICE_DATA}/koillection/mysql:/var/lib/mysql
     env_file: ../.env
-  #   image: postgres:16
-  #   restart: unless-stopped
-  #   environment:
-  #       - POSTGRES_DB=koillection
-  #       - POSTGRES_USER=koillection
-  #       - POSTGRES_PASSWORD=${DB_PASSWORD}
-  #   volumes:
-  #       - ${SERVICE_DATA}/koillection/postgresql:/var/lib/postgresql/data"
+    networks:
+      internal_network:
+        #   image: postgres:16
+        #   restart: unless-stopped
+        #   environment:
+        #       - POSTGRES_DB=koillection
+        #       - POSTGRES_USER=koillection
+        #       - POSTGRES_PASSWORD=${DB_PASSWORD}
+        #   volumes:
+        #       - ${SERVICE_DATA}/koillection/postgresql:/var/lib/postgresql/data"
