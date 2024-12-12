@@ -5,7 +5,7 @@ networks:
 services:
   koillection:
     image: koillection/koillection
-    restart: unless-stopped
+    restart: always
     depends_on:
       - db
     environment:
@@ -49,7 +49,7 @@ services:
       internal_network:
   db:
     image: mysql:latest
-    restart: unless-stopped
+    restart: always
     environment:
       - TZ=${TZ} # Specify a timezone to use e.g. Europe/London.
       - PUID=${PUID} # UID of user to take ownership of application/files
@@ -64,7 +64,7 @@ services:
     networks:
       internal_network:
         #   image: postgres:16
-        #   restart: unless-stopped
+        #   restart: always
         #   environment:
         #       - POSTGRES_DB=koillection
         #       - POSTGRES_USER=koillection

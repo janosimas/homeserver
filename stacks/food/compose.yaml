@@ -4,8 +4,8 @@ networks:
 
 services:
   mealie:
-    image: ghcr.io/mealie-recipes/mealie:v1.8.0
-    restart: unless-stopped
+    image: ghcr.io/mealie-recipes/mealie:latest
+    restart: always
     deploy:
       resources:
         limits:

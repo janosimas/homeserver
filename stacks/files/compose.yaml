@@ -5,7 +5,7 @@ networks:
 services:
   miniserve:
     image: docker.io/svenstaro/miniserve
-    restart: unless-stopped
+    restart: always
     user: ${PUID}:${PGID}
     environment:
       - TZ=${TZ} # Specify a timezone to use e.g. Europe/London.
@@ -36,7 +36,7 @@ services:
       internal_network:
   filebrowser:
     image: hurlenko/filebrowser
-    restart: unless-stopped
+    restart: always
     user: ${PUID}:${PGID}
     environment:
       - TZ=${TZ} # Specify a timezone to use e.g. Europe/London.
@@ -61,7 +61,7 @@ services:
       internal_network:
   transmission:
     image: lscr.io/linuxserver/transmission:latest
-    restart: unless-stopped
+    restart: always
     environment:
       - PUID=${PUID}
       - PGID=${PGID}

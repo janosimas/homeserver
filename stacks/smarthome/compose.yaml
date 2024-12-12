@@ -5,7 +5,7 @@ networks:
 services:
   homeassistant:
     image: linuxserver/homeassistant
-    restart: unless-stopped
+    restart: always
     environment:
       - TZ=${TZ} # Specify a timezone to use e.g. Europe/London.
       - PUID=${PUID} # UID of user to take ownership of application/files
@@ -27,7 +27,7 @@ services:
       internal_network:
   mosquitto:
     image: eclipse-mosquitto
-    restart: unless-stopped
+    restart: always
     environment:
       - TZ=${TZ} # Specify a timezone to use e.g. Europe/London.
       - PUID=${PUID} # UID of user to take ownership of application/files
@@ -44,7 +44,7 @@ services:
       internal_network:
   node-red:
     image: nodered/node-red
-    restart: unless-stopped
+    restart: always
     user: ${PUID}:${PGID}
     depends_on:
       - homeassistant
