@@ -1,6 +1,8 @@
 #!/bin/bash
 set -o nounset -o pipefail -o errexit
 
+source .env
+
 STACKS_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 DOCKGE_PORT=5001
 COMPOSE_FILE="${STACKS_DIR}/compose.yaml"
@@ -16,8 +18,19 @@ echo """
       - homepage.group=System
       - homepage.name=Dockge
       - homepage.icon=dockge.png
-      - homepage.href=http://${INTERNAL_ADDR}:${DOCKGE_PORT}/
-      - homepage.description=Docker compose manager""" >> "${COMPOSE_FILE}"
+      - homepage.href=http://dockge.server.home/
+      - homepage.description=Docker compose manager
+      - traefik.enable=true
+      - traefik.http.routers.dockge.rule=Host(\`dockge.server.home\`)
+      - traefik.http.routers.dockge.entrypoints=web
+      - traefik.http.services.dockge.loadbalancer.server.port=5001
+    networks:
+      internal_network:
+
+networks:
+  internal_network:
+    external: true
+      """ >> "${COMPOSE_FILE}"
 
 if [[ "${SERVICE_DATA}" ]] && grep -Fq '${SERVICE_DATA}/dockge/data:' ${COMPOSE_FILE}; then
     docker compose up -d
