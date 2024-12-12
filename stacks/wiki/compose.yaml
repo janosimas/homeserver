@@ -1,0 +1,55 @@
+networks:
+  internal_network:
+    external: true
+
+services:
+  wikijs:
+    image: lscr.io/linuxserver/wikijs:latest
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - DB_TYPE=sqlite
+    volumes:
+      - ${SERVICE_DATA}/wikijs/config:/config
+      - ${SERVICE_DATA}/wikijs/data:/data
+    restart: always
+    env_file: ../.env
+    labels:
+      - homepage.group=Tools
+      - homepage.name=Wikijs
+      - homepage.icon=wikijs.png
+      - homepage.href=http://wikijs.server.home/
+      - homepage.description=Recipe manager
+      - traefik.enable=true
+      - traefik.http.routers.wikijs.rule=Host(`wikijs.server.home`)
+      - traefik.http.routers.wikijs.entrypoints=web
+      - traefik.http.services.wikijs.loadbalancer.server.port=3000
+    networks:
+      internal_network:
+  vikunja:
+    image: vikunja/vikunja
+    environment:
+      TZ: ${TZ}
+      VIKUNJA_SERVICE_JWTSECRET: ${VIKUNJA_SERVICE_JWTSECRET}
+      VIKUNJA_SERVICE_PUBLICURL: http://vikunja.server.home/
+      # Note the default path is /app/vikunja/vikunja.db.
+      # This config variable moves it to a different folder so you can use a volume and 
+      # store the database file outside the container so state is persisted even if the container is destroyed.
+      VIKUNJA_DATABASE_PATH: /db/vikunja.db
+    volumes:
+      - ${SERVICE_DATA}/vikunja/files:/app/vikunja/files
+      - ${SERVICE_DATA}/vikunja/db:/db
+    restart: always
+    labels:
+      - homepage.group=Tools
+      - homepage.name=Vikunja
+      - homepage.icon=vikunja.png
+      - homepage.href=http://vikunja.server.home/
+      - homepage.description=ToDo app
+      - traefik.enable=true
+      - traefik.http.routers.vikunja.rule=Host(`vikunja.server.home`)
+      - traefik.http.routers.vikunja.entrypoints=web
+      - traefik.http.services.vikunja.loadbalancer.server.port=3456
+    networks:
+      internal_network:
