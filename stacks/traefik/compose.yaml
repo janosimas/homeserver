@@ -47,4 +47,5 @@ networks:
   internal_network:
     external: true
   traefik_proxy_network:
+    name: traefik_proxy_network
     driver: bridge
