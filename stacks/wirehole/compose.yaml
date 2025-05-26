@@ -68,7 +68,7 @@ services:
     depends_on:
       - unbound
     container_name: pihole
-    image: pihole/pihole:2023.10.0
+    image: pihole/pihole:latest
     hostname: pihole
     restart: always
     dns:
@@ -79,7 +79,7 @@ services:
       PGID: ${PGID} # GID of user to take ownership of application/files
       TZ: ${TZ}
       WEBPASSWORD: ${PIHOLE_PASSWORD} # Blank password - Can be whatever you want.
-      ServerIP: 192.168.2.28 # Internal IP of pihole
+      ServerIP: 192.168.2.14 # Internal IP of pihole
       DNS1: 10.2.0.200 # Unbound IP
       DNS2: 10.2.0.200 # If we don't specify two, it will auto pick google.
     # Volumes store your data between container upgrades
@@ -99,6 +99,11 @@ services:
       internal_network:
         ipv4_address: 10.2.0.100
     labels:
+      - homepage.group=System
+      - homepage.name=PiHole
+      - homepage.icon=pihole.png
+      - homepage.href=http://pihole.server.home
+      - homepage.description=DNS server
       - "traefik.enable=true"
       - "traefik.http.routers.pihole.rule=Host(`pihole.server.home`)"
       - "traefik.http.routers.pihole.entrypoints=web"
