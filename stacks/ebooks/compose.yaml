@@ -1,11 +1,10 @@
 networks:
-  internal_network:
+  traefik_proxy_network:
     external: true
 
 services:
-  calibre-web-automated:
+  calibre:
     image: crocodilestick/calibre-web-automated:latest
-    container_name: calibre-web-automated
     environment:
       - TZ=${TZ} # Specify a timezone to use e.g. Europe/London.
       - PUID=${PUID} # UID of user to take ownership of application/files
@@ -19,10 +18,10 @@ services:
       - ${SHARED_DATA}/books:/calibre-library
     restart: unless-stopped
     networks:
-      internal_network:
+      traefik_proxy_network:
     labels:
       - homepage.group=Media
-      - homepage.name=Calibre-Web-Automated
+      - homepage.name=Calibre
       - homepage.icon=calibre-web.png
       - homepage.href=http://calibre.server.home
       - homepage.description=Ebook server
@@ -42,7 +41,7 @@ services:
       - ${SERVICE_DATA}/calibre/config:/config # Where calibre-web stores the internal database and config.
       - ${SHARED_DATA}/books:/books # Where your calibre database is located
     networks:
-      internal_network:
+      traefik_proxy_network:
     env_file: ../.env
     labels:
       - homepage.group=Media
@@ -62,7 +61,7 @@ services:
       - PUID=${PUID} # UID of user to take ownership of application/files
       - PGID=${PGID} # GID of user to take ownership of application/files
     networks:
-      internal_network:
+      traefik_proxy_network:
     volumes:
       - ${SERVICE_DATA}/audiobookshelf/metadata:/metadata
       - ${SERVICE_DATA}/audiobookshelf/config:/config
@@ -81,7 +80,7 @@ services:
       - traefik.http.routers.audiobookshelf.rule=Host(`audiobookshelf.server.home`)
       - traefik.http.routers.audiobookshelf.entrypoints=web
       - traefik.http.services.audiobookshelf.loadbalancer.server.port=80
-  calibre:
+  calibre-desktop:
     image: linuxserver/calibre
     restart: always
     security_opt:
@@ -104,7 +103,7 @@ services:
     env_file: ../.env
     labels:
       - homepage.group=Media
-      - homepage.name=Calibre
+      - homepage.name=CalibreDesktop
       - homepage.icon=calibre.png
       - homepage.href=http://${INTERNAL_ADDR}:8080/
       - homepage.description=Ebook server
