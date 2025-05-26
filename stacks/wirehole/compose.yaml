@@ -60,6 +60,11 @@ services:
       internal_network:
         ipv4_address: 10.2.0.3
     labels:
+      - homepage.group=System
+      - homepage.name=Wireguard
+      - homepage.icon=wireguard.png
+      - homepage.href=http://wireguard.server.home
+      - homepage.description=Secure tunnel
       - "traefik.enable=true"
       - "traefik.http.routers.wireguard.rule=Host(`wireguard.server.home`)"
       - "traefik.http.routers.wireguard.entrypoints=web"
@@ -101,8 +106,8 @@ services:
     labels:
       - homepage.group=System
       - homepage.name=PiHole
-      - homepage.icon=pihole.png
-      - homepage.href=http://pihole.server.home
+      - homepage.icon=pi-hole.png
+      - homepage.href=http://pihole.server.home/admin
       - homepage.description=DNS server
       - "traefik.enable=true"
       - "traefik.http.routers.pihole.rule=Host(`pihole.server.home`)"
