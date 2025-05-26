@@ -24,6 +24,11 @@ services:
     networks:
       internal_network:
     labels:
+      - homepage.group=System
+      - homepage.name=Traefik
+      - homepage.icon=traefik.png
+      - homepage.href=http://traefik.server.home
+      - homepage.description=Reverse proxy
       - "traefik.enable=true"
       - "traefik.http.routers.traefik.rule=Host(`traefik.server.home`)"
       - "traefik.http.routers.traefik.entrypoints=web"
