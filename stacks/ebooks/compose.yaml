@@ -3,6 +3,33 @@ networks:
     external: true
 
 services:
+  calibre-web-automated:
+    image: crocodilestick/calibre-web-automated:latest
+    container_name: calibre-web-automated
+    environment:
+      - TZ=${TZ} # Specify a timezone to use e.g. Europe/London.
+      - PUID=${PUID} # UID of user to take ownership of application/files
+      - PGID=${PGID} # GID of user to take ownership of application/files
+    volumes:
+      # CW users migrating should stop their existing CW instance, make a copy of the config folder, and bind that here to carry over all of their user settings ect.
+      - ${SERVICE_DATA}/calibre/config:/config # Where calibre-web stores the internal database and config.
+      # This is an ingest dir, NOT a library one. Anything added here will be automatically added to your library according to the settings you have configured in CWA Settings page. All files placed here are REMOVED AFTER PROCESSING
+      - ${SHARED_DATA}/book-ingest:/cwa-book-ingest
+      # If you don't have an existing library, CWA will automatically create one at the bind provided here
+      - ${SHARED_DATA}/books:/calibre-library
+    restart: unless-stopped
+    networks:
+      internal_network:
+    labels:
+      - homepage.group=Media
+      - homepage.name=Calibre-Web-Automated
+      - homepage.icon=calibre-web.png
+      - homepage.href=http://calibre.server.home
+      - homepage.description=Ebook server
+      - traefik.enable=true
+      - traefik.http.routers.calibre.rule=Host(`calibre.server.home`)
+      - traefik.http.routers.calibre.entrypoints=web
+      - traefik.http.services.calibre.loadbalancer.server.port=8083
   calibre_web:
     image: linuxserver/calibre-web
     restart: always
