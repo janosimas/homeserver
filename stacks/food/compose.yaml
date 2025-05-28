@@ -1,5 +1,5 @@
 networks:
-  internal_network:
+  traefik_proxy_network:
     external: true
 
 services:
@@ -32,4 +32,4 @@ services:
       - traefik.http.routers.mealie.entrypoints=web
       - traefik.http.services.mealie.loadbalancer.server.port=9000
     networks:
-      internal_network:
+      traefik_proxy_network:
