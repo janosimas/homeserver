@@ -1,5 +1,5 @@
 networks:
-  internal_network:
+  traefik_proxy_network:
     external: true
 
 services:
@@ -33,7 +33,7 @@ services:
       - traefik.http.services.miniserve.loadbalancer.server.port=8080
     command: /data --upload-files
     networks:
-      internal_network:
+      traefik_proxy_network:
   filebrowser:
     image: hurlenko/filebrowser
     restart: always
@@ -58,7 +58,7 @@ services:
       - traefik.http.routers.filebrowser.entrypoints=web
       - traefik.http.services.filebrowser.loadbalancer.server.port=8080
     networks:
-      internal_network:
+      traefik_proxy_network:
   transmission:
     image: lscr.io/linuxserver/transmission:latest
     restart: always
@@ -87,4 +87,4 @@ services:
       - traefik.http.routers.transmission.entrypoints=web
       - traefik.http.services.transmission.loadbalancer.server.port=9091
     networks:
-      internal_network:
+      traefik_proxy_network:
