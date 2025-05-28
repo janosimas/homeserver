@@ -1,5 +1,5 @@
 networks:
-  internal_network:
+  traefik_proxy_network:
     external: true
 
 services:
@@ -12,7 +12,7 @@ services:
       - ${SERVICE_DATA}/homepage/config:/app/config # Make sure your local config directory exists
       - /var/run/docker.sock:/var/run/docker.sock:ro # (optional) For docker integrations
     networks:
-      internal_network:
+      traefik_proxy_network:
     labels:
       - traefik.enable=true
       - traefik.http.routers.home.rule=Host(`server.home`)
