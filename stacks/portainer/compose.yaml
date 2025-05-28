@@ -1,5 +1,5 @@
 networks:
-  internal_network:
+  traefik_proxy_network:
     external: true
 
 services:
@@ -24,7 +24,7 @@ services:
       - traefik.http.routers.portainer.entrypoints=web
       - traefik.http.services.portainer.loadbalancer.server.port=9000
     networks:
-      internal_network:
+      traefik_proxy_network:
   reset_password:
     image: portainer/helper-reset-password
     volumes:

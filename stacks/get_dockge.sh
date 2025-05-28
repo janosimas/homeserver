@@ -25,10 +25,10 @@ echo """
       - traefik.http.routers.dockge.entrypoints=web
       - traefik.http.services.dockge.loadbalancer.server.port=5001
     networks:
-      internal_network:
+      traefik_proxy_network:
 
 networks:
-  internal_network:
+  traefik_proxy_network:
     external: true
       """ >> "${COMPOSE_FILE}"
 

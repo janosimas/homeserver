@@ -1,5 +1,5 @@
 networks:
-  internal_network:
+  traefik_proxy_network:
     external: true
 
 services:
@@ -24,7 +24,7 @@ services:
       - traefik.http.routers.homeassistant.entrypoints=web
       - traefik.http.services.homeassistant.loadbalancer.server.port=8123
     networks:
-      internal_network:
+      traefik_proxy_network:
   mosquitto:
     image: eclipse-mosquitto
     restart: always
@@ -41,7 +41,7 @@ services:
       - traefik.http.routers.mosquitto.entrypoints=web
       - traefik.http.services.mosquitto.loadbalancer.server.port=1883
     networks:
-      internal_network:
+      traefik_proxy_network:
   node-red:
     image: nodered/node-red
     restart: always
@@ -67,4 +67,4 @@ services:
       - traefik.http.routers.nodered.entrypoints=web
       - traefik.http.services.nodered.loadbalancer.server.port=1880
     networks:
-      internal_network:
+      traefik_proxy_network:
