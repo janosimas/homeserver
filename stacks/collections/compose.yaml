@@ -1,5 +1,5 @@
 networks:
-  internal_network:
+  traefik_proxy_network:
     external: true
 
 services:
@@ -46,7 +46,7 @@ services:
       - traefik.http.routers.koillection.entrypoints=web
       - traefik.http.services.koillection.loadbalancer.server.port=80
     networks:
-      internal_network:
+      traefik_proxy_network:
   db:
     image: mysql:latest
     restart: always
@@ -62,7 +62,7 @@ services:
       - ${SERVICE_DATA}/koillection/mysql:/var/lib/mysql
     env_file: ../.env
     networks:
-      internal_network:
+      traefik_proxy_network:
         #   image: postgres:16
         #   restart: always
         #   environment:
