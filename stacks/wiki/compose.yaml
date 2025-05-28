@@ -1,5 +1,5 @@
 networks:
-  internal_network:
+  traefik_proxy_network:
     external: true
 
 services:
@@ -26,7 +26,7 @@ services:
       - traefik.http.routers.wikijs.entrypoints=web
       - traefik.http.services.wikijs.loadbalancer.server.port=3000
     networks:
-      internal_network:
+      traefik_proxy_network:
   vikunja:
     image: vikunja/vikunja
     environment:
@@ -52,4 +52,4 @@ services:
       - traefik.http.routers.vikunja.entrypoints=web
       - traefik.http.services.vikunja.loadbalancer.server.port=3456
     networks:
-      internal_network:
+      traefik_proxy_network:
