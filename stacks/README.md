@@ -6,7 +6,7 @@ In `Stacks` are a set of `docker compose` configurations of multipla application
 
 - Network
 
-All the stacks use the same network (`internal_network`) to allow routing. This network is created by the `wirewhole` stack but if you're not using it you can just copy the configuration to another stack.
+All the stacks use the `traefik_proxy_network` to allow routing. This network is created by the `traefik` stack but if you're not using it you can just copy the configuration to another stack.
 
 - Labels
 
@@ -39,7 +39,7 @@ The general structure of the stacks is:
    <service name>:
     ...
     networks:
-      internal_network:
+      traefik_proxy_network:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.<service name>.rule=Host(`<service name>.server.home`)"
