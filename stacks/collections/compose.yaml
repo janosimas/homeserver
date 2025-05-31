@@ -45,7 +45,9 @@ services:
       - traefik.http.routers.koillection.rule=Host(`koillection.server.home`)
       - traefik.http.routers.koillection.entrypoints=web
       - traefik.http.services.koillection.loadbalancer.server.port=80
+      - traefik.docker.network=traefik_proxy_network
     networks:
+      default:
       traefik_proxy_network:
   db:
     image: mysql:latest
@@ -62,7 +64,7 @@ services:
       - ${SERVICE_DATA}/koillection/mysql:/var/lib/mysql
     env_file: ../.env
     networks:
-      traefik_proxy_network:
+      default:
         #   image: postgres:16
         #   restart: always
         #   environment:
