@@ -80,8 +80,6 @@ services:
       - 127.0.0.1
       - 10.2.0.200 # Points to unbound
     environment:
-      PUID: ${PUID} # UID of user to take ownership of application/files
-      PGID: ${PGID} # GID of user to take ownership of application/files
       TZ: ${TZ}
       WEBPASSWORD: ${PIHOLE_PASSWORD} # Blank password - Can be whatever you want.
       ServerIP: 192.168.2.14 # Internal IP of pihole
